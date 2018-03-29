@@ -596,19 +596,6 @@ namespace NurikabeApp
 
             if (PoolCheck(PoolCheckArray))
             {
-              for (int k = 0; k < matrixSize; k++)
-              {
-                if (!String.IsNullOrEmpty(pattern[k]))
-                {
-                  copyArray = pattern[k].ToCharArray();
-                  for (int j = 0; j < matrixSize; j++)
-                  {
-                    matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-                  }
-                }
-              }
-
-              matrixClone = (int[,])matrix.Clone();
 
               #region Verticle Line and Horizontal Line Checks
 
@@ -685,8 +672,24 @@ namespace NurikabeApp
 
               #endregion
               // Pattern Check is true && index is at maximum size of matrix. 
-              if (patternCheck && index == matrixSize-1)
+              if (patternCheck && index == matrixSize - 1)
+              {
+                for (int k = 0; k < matrixSize; k++)
+                {
+                  if (!String.IsNullOrEmpty(pattern[k]))
+                  {
+                    copyArray = pattern[k].ToCharArray();
+                    for (int j = 0; j < matrixSize; j++)
+                    {
+                      matrix[k, j] = Int32.Parse(copyArray[j].ToString());
+                    }
+                  }
+                }
+
+                matrixClone = (int[,])matrix.Clone();
+
                 ContinuityCheck();
+              }
             }
           }
           if (patternCheck || index == 0)
