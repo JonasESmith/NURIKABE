@@ -20,6 +20,7 @@ using System.Drawing;
 using System.IO;
 using System;
 
+
 namespace NurikabeApp
 {
   public partial class Nurikabe : Form
@@ -43,11 +44,12 @@ namespace NurikabeApp
     static string containsPool  = "There is a pool in the matrix";
     static string goodPattern   = "This is a good pattern!";
     static string path          = "pattern.txt";
-    static string boolList;
+
+    PatternGeneration generator;
 
     static List<string> generatedRows = new List<string>();
-    static List<int[,]> MatrixList = new List<int[,]>();
-    static List<char>   pattern     = new List<char>();
+    static List<int[,]> MatrixList    = new List<int[,]>();
+    static List<char>   pattern       = new List<char>();
 
     static  string[] PoolCheckArray;
     static  int[,]   matrixClone, matrix;
@@ -287,6 +289,9 @@ namespace NurikabeApp
     //// </summary>
     private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
     {
+      generator = new PatternGeneration(matrixSize);
+
+
       /// <summary>
       ///   Need to also start a small timer here to properly adjust and understand how long the
       ///    events that take place are processing. This will allow me to know exacts as far as 
@@ -294,37 +299,39 @@ namespace NurikabeApp
       ///    using subprocesses to try and finishthis process much faster. 
       /// </summary>
 
-      generatedRows.Clear();
-      pattern.Clear();
-      for (int i = 0; i <= (matrixSize * matrixSize); i++)
-        pattern.Add(' ');
-
       Stopwatch timer = new Stopwatch();
       timer.Start();
 
       patternCount = 0;
-      recursiveCalls = 1; 
+      recursiveCalls = 1;
 
-      //error
-      GenPatterns(0);
-
-      
       List<string> localPattern = new List<string>();
 
       for (int i = 0; i < matrixSize; i++)
         localPattern.Add("");
 
-      GenMatrixPattern(0, localPattern);
+      generator.GenerateRows(0);
+      generator.GeneratePattern(0, localPattern, ref patternCount);
+      
+      //List<string> localPattern = new List<string>();
+
+      //for (int i = 0; i < matrixSize; i++)
+      //  localPattern.Add("");
+
+      //GenMatrixPattern(0, localPattern);
       timer.Stop();
 
-      localPattern.Clear();
+      // localPattern.Clear();
       CountLabel.Text = "Patterns : " + patternCount.ToString();
       RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
 
       timeLabel.Text = timer.Elapsed.TotalSeconds.ToString();
       timeLabel.Update();
-      // 3.306 Minutes to calculate 5x5 patterns when  checking for continuity.  
-      // 2.9 minutes to calculate 5x5 pattern when not checking for continuity. 
+      /// <summary>
+      /// 3.306 Minutes to calculate 5x5 patterns when  checking for continuity.  
+      /// 2.9 minutes to calculate 5x5 pattern when not checking for continuity. 
+      /// 
+      /// </summary>
     }
 
     /// <summary>
@@ -549,26 +556,26 @@ namespace NurikabeApp
     ///   This produces all possible patterns for a row of n sizes, by first putting a water block
     ///     in each section of the pattern, then switching them to zeros as the method continues. 
     /// </summary>
-    private void GenPatterns(int index)
-    {
-      string finalPattern;
+    //private void GenPatterns(int index)
+    //{
+    //  string finalPattern;
 
-      if (index < (matrixSize))
-      {
-        pattern[index] = '1';
-        GenPatterns(index + 1);
+    //  if (index < (matrixSize))
+    //  {
+    //    pattern[index] = '1';
+    //    GenPatterns(index + 1);
 
-        pattern[index] = '0';
-        GenPatterns(index + 1);
-      }
-      else
-      {
-        finalPattern = "";
-        foreach (char ch in pattern)
-          finalPattern += ch;
-        generatedRows.Add(finalPattern);
-      }
-    }
+    //    pattern[index] = '0';
+    //    GenPatterns(index + 1);
+    //  }
+    //  else
+    //  {
+    //    finalPattern = "";
+    //    foreach (char ch in pattern)
+    //      finalPattern += ch;
+    //    generatedRows.Add(finalPattern);
+    //  }
+    //}
 
 
     /// <summary>
@@ -596,98 +603,97 @@ namespace NurikabeApp
 
             if (PoolCheck(PoolCheckArray))
             {
+              for (int k = 0; k < matrixSize; k++)
+              {
+                if (!String.IsNullOrEmpty(pattern[k]))
+                {
+                  copyArray = pattern[k].ToCharArray();
+                  for (int j = 0; j < matrixSize; j++)
+                  {
+                    matrix[k, j] = Int32.Parse(copyArray[j].ToString());
+                  }
+                }
+              }
+
+              matrixClone = (int[,])matrix.Clone();
 
               #region Verticle Line and Horizontal Line Checks
 
 
-              string[,] check = new string[2, matrixSize];
+              //string[,] check = new string[2, matrixSize];
 
-              string horCheck = "";
-              //string verCheck = "";
+              //string horCheck = "";
+              ////string verCheck = "";
 
-              int horCount = 0, verCount = 0;
-
-
-              for (int k = 0; k < matrixSize; k++)
-              {
-                horCheck = "";
-                //verCheck = "";
-                for (int j = 0; j < matrixSize; j++)
-                {
-                  horCheck += matrix[k, j];
-                  //verCheck += matrix[j, k];
-                }
-
-                if (horCheck.Contains("1"))
-                  check[0, k] = "1";
-                else
-                  check[0, k] = "0";
-
-                //  if (verCheck.Contains("1"))
-                //    check[1, k] = "1";
-                //  else
-                //    check[1, k] = "0";
-              }
-
-              for (int j = 0; j < matrixSize; j++)
-              {
-                if (check[0, j] == "1")
-                {
-                  horCount++;
-                }
-                //  if (check[1, j] == "1")
-                //  {
-                //    verCount++;
-                //  }
-              }
-
-              int actualHorCount = 0, actualVerCount = 0;
-
-              for (int j = 0; j < matrixSize; j++)
-              {
-                if (check[0, j] == "1")
-                {
-                  actualHorCount++;
-                  if (j + 1 < matrixSize && check[0, j + 1] == "1")
-                  {
-                    continue;
-                  }
-                  else
-                  {
-                    break;
-                  }
-                }
+              //int horCount = 0, verCount = 0;
 
 
-                //  if (check[1, j] == "1")
-                //  {
-                //    actualVerCount++;
-                //  }
-              }
+              //for (int k = 0; k < matrixSize; k++)
+              //{
+              //  horCheck = "";
+              //  //verCheck = "";
+              //  for (int j = 0; j < matrixSize; j++)
+              //  {
+              //    horCheck += matrix[k, j];
+              //    //verCheck += matrix[j, k];
+              //  }
 
-              if (horCount != actualHorCount) //|| verCount != actualVerCount)
-              {
-                patternCheck = false;
-              }
+              //  if (horCheck.Contains("1"))
+              //    check[0, k] = "1";
+              //  else
+              //    check[0, k] = "0";
+
+              //  //  if (verCheck.Contains("1"))
+              //  //    check[1, k] = "1";
+              //  //  else
+              //  //    check[1, k] = "0";
+              //}
+
+              //for (int j = 0; j < matrixSize; j++)
+              //{
+              //  if (check[0, j] == "1")
+              //  {
+              //    horCount++;
+              //  }
+              //  //  if (check[1, j] == "1")
+              //  //  {
+              //  //    verCount++;
+              //  //  }
+              //}
+
+              //int actualHorCount = 0, actualVerCount = 0;
+
+              //for (int j = 0; j < matrixSize; j++)
+              //{
+              //  if (check[0, j] == "1")
+              //  {
+              //    actualHorCount++;
+              //    if (j + 1 < matrixSize && check[0, j + 1] == "1")
+              //    {
+              //      continue;
+              //    }
+              //    else
+              //    {
+              //      break;
+              //    }
+              //  }
+
+
+              //  //  if (check[1, j] == "1")
+              //  //  {
+              //  //    actualVerCount++;
+              //  //  }
+              //}
+
+              //if (horCount != actualHorCount) //|| verCount != actualVerCount)
+              //{
+              //  patternCheck = false;
+              //}
 
               #endregion
               // Pattern Check is true && index is at maximum size of matrix. 
               if (patternCheck && index == matrixSize - 1)
               {
-                for (int k = 0; k < matrixSize; k++)
-                {
-                  if (!String.IsNullOrEmpty(pattern[k]))
-                  {
-                    copyArray = pattern[k].ToCharArray();
-                    for (int j = 0; j < matrixSize; j++)
-                    {
-                      matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-                    }
-                  }
-                }
-
-                matrixClone = (int[,])matrix.Clone();
-
                 ContinuityCheck();
               }
             }
