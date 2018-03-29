@@ -45,7 +45,7 @@ namespace NurikabeApp
     static string path          = "pattern.txt";
     static string boolList;
 
-    static List<string> patternList = new List<string>();
+    static List<string> generatedRows = new List<string>();
     static List<int[,]> MatrixList = new List<int[,]>();
     static List<char>   pattern     = new List<char>();
 
@@ -294,7 +294,7 @@ namespace NurikabeApp
       ///    using subprocesses to try and finishthis process much faster. 
       /// </summary>
 
-      patternList.Clear();
+      generatedRows.Clear();
       pattern.Clear();
       for (int i = 0; i <= (matrixSize * matrixSize); i++)
         pattern.Add(' ');
@@ -566,7 +566,7 @@ namespace NurikabeApp
         finalPattern = "";
         foreach (char ch in pattern)
           finalPattern += ch;
-        patternList.Add(finalPattern);
+        generatedRows.Add(finalPattern);
       }
     }
 
@@ -586,9 +586,9 @@ namespace NurikabeApp
 
       if (index < (matrixSize))
       {
-        for (int i = 0; i < patternList.Count; i++)
+        for (int i = 0; i < generatedRows.Count; i++)
         {
-          pattern[index] = (patternList[i]);
+          pattern[index] = (generatedRows[i]);
           if (index != 0)
           {
             PoolCheckArray[0] = pattern[index - 1];
@@ -745,7 +745,7 @@ namespace NurikabeApp
     //    finalPattern = "";
     //    foreach (char ch in pattern)
     //      finalPattern += ch;
-    //    patternList.Add(finalPattern);
+    //    generatedRows.Add(finalPattern);
     //  }
     //}
 
@@ -756,9 +756,9 @@ namespace NurikabeApp
 
     //  if (index < (matrixSize))
     //  {
-    //    for (int i = 0; i < patternList.Count; i++)
+    //    for (int i = 0; i < generatedRows.Count; i++)
     //    {
-    //      pattern[index] = (patternList[i]);
+    //      pattern[index] = (generatedRows[i]);
     //      if (index != 0)
     //      {
     //        PoolCheckArray[0] = pattern[index - 1];
