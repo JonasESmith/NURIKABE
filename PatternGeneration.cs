@@ -17,6 +17,12 @@ namespace NurikabeApp
     bool     patternCheck;
     int      matrixSize, area;
 
+    public int recursiveCalls
+    { get; private set; }
+
+    public int patternCount
+    { get; private set; }
+
     private BackgroundWorker worker;
 
     // ************************************************************************************** //
@@ -75,7 +81,7 @@ namespace NurikabeApp
     ///     makes sure that all remaining patterns are not containing a pool. 
     /// </summary>
 
-    public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
+    public void GeneratePattern(int index, List<string> pattern)
     {
       // Reasonable check for now, this blocks Main if updated every time this method gets called.
       if (recursiveCalls % 1000 == 0)
@@ -117,7 +123,7 @@ namespace NurikabeApp
           }
           if (patternCheck || index == 0)
           {
-            GeneratePattern(index + 1, pattern, ref patternCount, ref recursiveCalls);
+            GeneratePattern(index + 1, pattern);
             recursiveCalls++;
           }
         }

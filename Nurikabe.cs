@@ -322,7 +322,9 @@ namespace NurikabeApp
       ///     kind of weird honestly. 
       /// </summary>
 
-      generator.GeneratePattern(0, localPattern, ref patternCount, ref recursiveCalls);
+      generator.GeneratePattern(0, localPattern);
+      recursiveCalls = generator.recursiveCalls;
+      patternCount = generator.patternCount;
 
       timer.Stop();
 
