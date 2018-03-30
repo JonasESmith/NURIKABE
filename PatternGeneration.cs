@@ -219,10 +219,9 @@ namespace NurikabeApp
               }
               else
               {
-                bool test = patternCheck;
                 // add the row bellow if it is also continuous continue
                 // However this would also have to do a pool check when the new row is added in!
-                if ((index < matrixSize - 1))// && !pattern[index].Contains("1"))
+                if (index < matrixSize - 1)// && !pattern[index].Contains("1"))
                 {
                   for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
