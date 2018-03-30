@@ -222,12 +222,11 @@ namespace NurikabeApp
                 bool test = patternCheck;
                 // add the row bellow if it is also continuous continue
                 // However this would also have to do a pool check when the new row is added in!
-                if (index < matrixSize - 1) // && !pattern[index].Contains("1"))
+                if ((index < matrixSize - 1))// && !pattern[index].Contains("1"))
                 {
-                  for (int nun = 0; nun < generatedRows.Count; nun++)
+                  for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
-
-                    pattern[index + 1] = generatedRows[nun];
+                    pattern[index + 1] = generatedRows[rowIndex];
 
                     if (ContinuityCheckMatrix(CopyMatrix(pattern)))
                       goto done;
@@ -235,11 +234,6 @@ namespace NurikabeApp
                 }
                 done : ;
               }
-              //// Pattern Check is true && index is at maximum size of matrix. 
-              //if (patternCheck && index == matrixSize - 1)
-              //{
-              //  ContinuityCheck();
-              //}
             }
           }
           if (patternCheck || index == 0)
@@ -252,7 +246,6 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
-        // MatrixList.Add(PrintPattern(pattern));
       }
     }
 
