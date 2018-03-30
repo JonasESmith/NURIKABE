@@ -589,22 +589,6 @@ namespace NurikabeApp
 // ************************************************************************************** //
 
 /// <summary>
-///  Future Ideas     : 1. Add a more efficient version of Generate patters in the PATTERN CHECKS
-///                      collection of code. Instead of using a recursive method to test every
-///                      possible pattern for each grid I could instead fragment the process
-///                      by first testing all possible soluciton of a row. then applying each 
-///                      possible row against itself to better test each possible pattern while
-///                      also pruning each branch to better increase efficienty. 
-///                     2. Add timer and possilbe calls vs actuall calls of each recurisive loop 
-///                       through the method to generate patterns. this method by far is the most
-///                       resource entensive and can improve the most. 
-///                           
-///                           EX. currently (3/24/18) the process to test all possible solutions 
-///                             of a 5x5 grid takes roughly 5 minutes in time for 33m patterns, 
-///                             this is with continuity checking. For a 6x6 Grid it would roughly 
-///                             be 68b patterns meaning the time would grow signifigantly to about
-///                             170 hours of processing time. This is with Zero Pruning. The 
-///                             possibility of adding in both the first and second "future idea"
-///                             would mean that more possible patterns could be processed and 
-///                             applied to the study. 
+///  Future Ideas     : 1.
+///  
 /// </summary>

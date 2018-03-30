@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System;
 using System.ComponentModel;
 using System.IO;
+using System;
 
 namespace NurikabeApp
 {
@@ -10,13 +10,12 @@ namespace NurikabeApp
     string path = "pattern.txt";
 
     List<string> generatedRows = new List<string>();
-    List<int[,]> MatrixList = new List<int[,]>();
-    List<char> pattern;
+    List<int[,]> MatrixList    = new List<int[,]>();
+    List<char>   pattern;
 
     string[] PoolCheckArray;
-    int matrixSize, area;
-
-    bool patternCheck;
+    bool     patternCheck;
+    int      matrixSize, area;
 
     private BackgroundWorker worker;
 
@@ -98,13 +97,9 @@ namespace NurikabeApp
             {
               if (ContinuityCheckMatrix(CopyMatrix(pattern)))
               {
-                // Just needs to be empty for now. 
               }
               else
               {
-                // add the row bellow if it is also continuous continue
-                // However this would also have to do a pool check when the new row is added in!
-                if (index < matrixSize - 1)// && !pattern[index].Contains("1"))
                 {
                   for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
