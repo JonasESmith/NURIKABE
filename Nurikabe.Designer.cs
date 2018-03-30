@@ -171,7 +171,9 @@
       // 
       // myWorker
       // 
+      this.myWorker.WorkerReportsProgress = true;
       this.myWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.myWorker_DoWork);
+      this.myWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.myWorker_ProgressChanged);
       this.myWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.myWorker_RunWorkerCompleted);
       // 
       // timeLabel

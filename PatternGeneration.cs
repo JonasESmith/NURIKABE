@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
-using System.Linq;
 using System;
+using System.ComponentModel;
 
 namespace NurikabeApp
 {
@@ -14,15 +12,19 @@ namespace NurikabeApp
 
     string[] PoolCheckArray;
     int[,] matrixClone, matrix;
-    int matrixSize, area, recursiveCalls;          
+    int matrixSize, area, recursiveCalls;
+
+    bool patternCheck;
+
+    private BackgroundWorker worker;
                                                    
-    bool patternCheck;                             
-                                                   
-    public PatternGeneration(int size)             
+    public PatternGeneration(int size, BackgroundWorker backgroundWorker)             
     {                                              
       matrixSize = size;                           
       matrix = new int[matrixSize, matrixSize];    
       matrixClone = new int[matrixSize, matrixSize];
+
+      worker = backgroundWorker;
                                                    
       pattern = new List<char>();                  
       for (int i = 0; i < matrixSize; i++)
@@ -190,6 +192,10 @@ namespace NurikabeApp
     
     public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
     {
+      // Reasonable check for now, this blocks Main if updated every time this method gets call.
+      if (recursiveCalls % 1000 == 0)
+        worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
+
       char[] copyArray = new char[matrixSize];
       PoolCheckArray = new string[2];
 

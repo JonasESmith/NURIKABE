@@ -47,6 +47,7 @@ namespace NurikabeApp
     string Time;
 
     PatternGeneration generator;
+    private Stopwatch timer;
 
     List<string> generatedRows = new List<string>();
     List<int[,]> MatrixList    = new List<int[,]>();
@@ -54,7 +55,6 @@ namespace NurikabeApp
 
     int[,]   matrixClone, matrix;
     int      matrixSize,  area, patternCount, recursiveCalls;
-
 
     static bool patternCheck;
 
@@ -285,22 +285,17 @@ namespace NurikabeApp
 
     private void myWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
-      CountLabel.Text = "Patterns : " + patternCount.ToString();
-      RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
-
-      timeLabel.Text = "Time : " + Time;
-      timeLabel.Update();
+      UpdateGenerationLabels();
     }
 
     private void myWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
     {
-      Stopwatch timer = new Stopwatch();
+      timer = new Stopwatch();
       timer.Start();
 
       BackgroundWorker worker = sender as BackgroundWorker;
 
-      generator = new PatternGeneration(matrixSize);
-
+      generator = new PatternGeneration(matrixSize, worker);
 
       patternCount = 0;
       recursiveCalls = 1;
@@ -318,6 +313,11 @@ namespace NurikabeApp
       Time = timer.Elapsed.TotalSeconds.ToString();
     }
 
+    private void myWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+    {
+      Time = timer.Elapsed.TotalSeconds.ToString();
+      UpdateGenerationLabels();
+    }
 
     /// <summary>
     ///    Generates all possible patterns for the currently selected matrix size. 
@@ -579,6 +579,15 @@ namespace NurikabeApp
         sw.WriteLine();
         index++;
       } sw.Close();
+    }
+
+    private void UpdateGenerationLabels()
+    {
+      CountLabel.Text = "Patterns : " + patternCount.ToString();
+      RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
+
+      timeLabel.Text = "Time : " + Time;
+      timeLabel.Update();
     }
     #endregion
   }
