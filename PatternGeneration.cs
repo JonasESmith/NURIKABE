@@ -249,19 +249,18 @@ namespace NurikabeApp
                 // However this would also have to do a pool check when the new row is added in!
                 if (index < matrixSize - 1) // && !pattern[index].Contains("1"))
                 {
-                  for (int nun = 0; nun < generatedRows.Count; nun++)
+                  for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
+                    pattern[index + 1] = generatedRows[rowIndex];
 
-                    pattern[index + 1] = generatedRows[nun];
-
-                    for (int k = 0; k < matrixSize; k++)
+                    for (int row = 0; row < matrixSize; row++)
                     {
-                      if (!String.IsNullOrEmpty(pattern[k]))
+                      if (!String.IsNullOrEmpty(pattern[row]))
                       {
-                        copyArray = pattern[k].ToCharArray();
-                        for (int j = 0; j < matrixSize; j++)
+                        copyArray = pattern[row].ToCharArray();
+                        for (int col = 0; col < matrixSize; col++)
                         {
-                          matrix[k, j] = Int32.Parse(copyArray[j].ToString());
+                          matrix[row, col] = Int32.Parse(copyArray[col].ToString());
                         }
                       }
                     }
@@ -274,11 +273,6 @@ namespace NurikabeApp
                 }
                 done : ;
               }
-              //// Pattern Check is true && index is at maximum size of matrix. 
-              //if (patternCheck && index == matrixSize - 1)
-              //{
-              //  ContinuityCheck();
-              //}
             }
           }
           if (patternCheck || index == 0)
@@ -291,7 +285,6 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
-        // MatrixList.Add(PrintPattern(pattern));
       }
     }
 
