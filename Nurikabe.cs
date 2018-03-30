@@ -322,18 +322,6 @@ namespace NurikabeApp
       ///     kind of weird honestly. 
       /// </summary>
 
-      //ThreadArray = new Thread[numOfThreads + 1];
-      //for (int i = 1; i < numOfThreads; i++)
-      //{
-      //  ThreadArray[i] = new Thread[generator.GeneratePattern];
-      //}
-
-
-      //for (int i = 1; i < numOfThreads; i++)
-      //{
-      //  ThreadArray[i].Start(i);
-      //}
-
       generator.GeneratePattern(0, localPattern, ref patternCount, ref recursiveCalls);
 
       timer.Stop();

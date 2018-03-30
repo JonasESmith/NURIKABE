@@ -225,6 +225,7 @@ namespace NurikabeApp
             {
               for (int k = 0; k < matrixSize; k++)
               {
+                
                 if (!String.IsNullOrEmpty(pattern[k]))
                 {
                   copyArray = pattern[k].ToCharArray();
@@ -239,9 +240,7 @@ namespace NurikabeApp
 
               if(ContinuityCheck())
               {
-                //1 1 0   1 1 0
-                //1 0 1   0 0 0
-                //0 0 0   1 1 1
+                // Just needs to be empty for now. 
               }
               else
               {
@@ -292,7 +291,7 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
-        MatrixList.Add(PrintPattern(pattern));
+        // MatrixList.Add(PrintPattern(pattern));
       }
     }
 
