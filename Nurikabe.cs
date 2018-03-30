@@ -1,6 +1,6 @@
 ﻿///////////////////////////////////////////////////////////////////////////////////
 ///                                                                             ///
-///  Programmer       : Jonas Smith                                             /// 
+///  Programmers      : Jonas Smith, Andrew Robinson                            /// 
 ///                                                                             ///
 ///  Purpose          : Test Nurikabe patterns, and create a sudoGame of it     ///
 ///                                                                             ///
@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System;
-
+using System.ComponentModel;
 
 namespace NurikabeApp
 {
@@ -40,24 +40,25 @@ namespace NurikabeApp
     ///   INITIALIZE ALL VARIABLES FOR THE APPLICATION
     /// </summary>
     #region Initialize all variables for the application
-    static string notContinuous = "The pattern is not continuous";
-    static string containsPool  = "There is a pool in the matrix";
-    static string goodPattern   = "This is a good pattern!";
-    static string path          = "pattern.txt";
+    string notContinuous = "The pattern is not continuous";
+    string containsPool  = "There is a pool in the matrix";
+    string goodPattern   = "This is a good pattern!";
+    string path          = "pattern.txt";
+    string Time;
 
     PatternGeneration generator;
 
-    static List<string> generatedRows = new List<string>();
-    static List<int[,]> MatrixList    = new List<int[,]>();
-    static List<char>   pattern       = new List<char>();
+    List<string> generatedRows = new List<string>();
+    List<int[,]> MatrixList    = new List<int[,]>();
+    List<char>   pattern       = new List<char>();
 
-    static  string[] PoolCheckArray;
-    static  int[,]   matrixClone, matrix;
-    static  int      matrixSize,  area, patternCount, recursiveCalls;
+    int[,]   matrixClone, matrix;
+    int      matrixSize,  area, patternCount, recursiveCalls;
+
 
     static bool patternCheck;
 
-    #endregion
+    #endregion 
 
 
 
@@ -148,12 +149,10 @@ namespace NurikabeApp
       }
     }
 
-
-
-    //<summary>
+    /// <summary>
     ///  This event is used on all buttons to update the button colors and the array associated 
     ///   with it. 
-    //</summary>
+    /// </summary>
     private void button_Click(object sender, EventArgs e)
     {
       Button button = sender as Button;
@@ -174,7 +173,7 @@ namespace NurikabeApp
         matrix[row, col] = 0;
       }
 
-      LoadMatrix(matrixSize);
+      // LoadMatrix(matrixSize);
 
       if(button.BackColor == Color.Black)
       {
@@ -273,7 +272,7 @@ namespace NurikabeApp
           matrix[i, j] = rnd.Next(0, 2);
         }
       }
-      LoadMatrix(matrixSize);
+      // LoadMatrix(matrixSize);
       ChangeButtons();
       messageLabel.Text = "";
     }
@@ -284,23 +283,24 @@ namespace NurikabeApp
       LoadAssets();
     }
 
-    //// <summary>
-    ////    Generates all possible patterns for the currently selected matrix size. 
-    //// </summary>
-    private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
+    private void myWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
-      generator = new PatternGeneration(matrixSize);
+      CountLabel.Text = "Patterns : " + patternCount.ToString();
+      RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
 
+      timeLabel.Text = "Time : " + Time;
+      timeLabel.Update();
+    }
 
-      /// <summary>
-      ///   Need to also start a small timer here to properly adjust and understand how long the
-      ///    events that take place are processing. This will allow me to know exacts as far as 
-      ///    percentages of calculations and the time taken by each process. I can also go about
-      ///    using subprocesses to try and finishthis process much faster. 
-      /// </summary>
-
+    private void myWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+    {
       Stopwatch timer = new Stopwatch();
       timer.Start();
+
+      BackgroundWorker worker = sender as BackgroundWorker;
+
+      generator = new PatternGeneration(matrixSize);
+
 
       patternCount = 0;
       recursiveCalls = 1;
@@ -311,27 +311,20 @@ namespace NurikabeApp
         localPattern.Add("");
 
       generator.GenerateRows(0);
-      generator.GeneratePattern(0, localPattern, ref patternCount);
-      
-      //List<string> localPattern = new List<string>();
+      generator.GeneratePattern(0, localPattern, ref patternCount, ref recursiveCalls);
 
-      //for (int i = 0; i < matrixSize; i++)
-      //  localPattern.Add("");
-
-      //GenMatrixPattern(0, localPattern);
       timer.Stop();
 
-      // localPattern.Clear();
-      CountLabel.Text = "Patterns : " + patternCount.ToString();
-      RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
+      Time = timer.Elapsed.TotalSeconds.ToString();
+    }
 
-      timeLabel.Text = timer.Elapsed.TotalSeconds.ToString();
-      timeLabel.Update();
-      /// <summary>
-      /// 3.306 Minutes to calculate 5x5 patterns when  checking for continuity.  
-      /// 2.9 minutes to calculate 5x5 pattern when not checking for continuity. 
-      /// 
-      /// </summary>
+
+    /// <summary>
+    ///    Generates all possible patterns for the currently selected matrix size. 
+    /// </summary>
+    private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      myWorker.RunWorkerAsync();
     }
 
     /// <summary>
@@ -389,7 +382,7 @@ namespace NurikabeApp
       matrixSize = Convert.ToInt32(MatrixSizeComboBox.GetItemText(MatrixSizeComboBox.SelectedItem));
 
       matrix = new int[matrixSize, matrixSize];
-      LoadMatrix(matrixSize);
+      // LoadMatrix(matrixSize);
 
       LoadButtons(matrixSize);
     }
@@ -437,30 +430,6 @@ namespace NurikabeApp
       return patternCheck;
     }
 
-    private bool PoolCheck(string[] matrix)
-    {
-      patternCheck      = true;
-      int[,] testMatrix = new int[2, matrixSize];
-      char[] arrayOne   = matrix[0].ToCharArray();
-      char[] arrayTwo   = matrix[1].ToCharArray();
-
-      for (int j = 0; j < matrixSize - 1; j++)
-      {
-        testMatrix[0, 0] = Int32.Parse(arrayOne[j].ToString());
-        testMatrix[0, 1] = Int32.Parse(arrayOne[j + 1].ToString());
-        testMatrix[1, 0] = Int32.Parse(arrayTwo[j].ToString());
-        testMatrix[1, 1] = Int32.Parse(arrayTwo[j + 1].ToString());
-
-        if (testMatrix[0, 0] == 1 && testMatrix[0, 1] == 1 && testMatrix[1, 0] == 1 && testMatrix[1, 1] == 1)
-        {
-          PatternMessage(containsPool);
-          patternCheck = false;
-        }
-      }
-
-      return patternCheck;
-    }
-
     private int Area(int row, int col)
     {
       /// <summary> 
@@ -491,7 +460,6 @@ namespace NurikabeApp
       }
       return area;
     }
-
 
     private bool ContinuityCheck()
     {
@@ -551,371 +519,9 @@ namespace NurikabeApp
       return count;
     }
 
-
-    /// <summary>
-    ///   This produces all possible patterns for a row of n sizes, by first putting a water block
-    ///     in each section of the pattern, then switching them to zeros as the method continues. 
-    /// </summary>
-    //private void GenPatterns(int index)
-    //{
-    //  string finalPattern;
-
-    //  if (index < (matrixSize))
-    //  {
-    //    pattern[index] = '1';
-    //    GenPatterns(index + 1);
-
-    //    pattern[index] = '0';
-    //    GenPatterns(index + 1);
-    //  }
-    //  else
-    //  {
-    //    finalPattern = "";
-    //    foreach (char ch in pattern)
-    //      finalPattern += ch;
-    //    generatedRows.Add(finalPattern);
-    //  }
-    //}
-
-
-    /// <summary>
-    ///   CHANGES CAN BE MADE HERE!
-    ///     Here more than anywhere major changes can be made to improve the efficiency of producing good patterns. 
-    /// 
-    ///   This recursive method starts by entering the first patern into each row, then switching it 
-    ///     with each iteration. It first checks for a pool when a new row is added. By doing this it
-    ///     makes sure that all remaining patterns are not containing a pool. 
-    /// </summary>
-    private void GenMatrixPattern(int index, List<string> pattern)
-    {
-      char[] copyArray = new char[matrixSize];
-      PoolCheckArray = new string[2];
-
-      if (index < (matrixSize))
-      {
-        for (int i = 0; i < generatedRows.Count; i++)
-        {
-          pattern[index] = (generatedRows[i]);
-          if (index != 0)
-          {
-            PoolCheckArray[0] = pattern[index - 1];
-            PoolCheckArray[1] = pattern[index];
-
-            if (PoolCheck(PoolCheckArray))
-            {
-              for (int k = 0; k < matrixSize; k++)
-              {
-                if (!String.IsNullOrEmpty(pattern[k]))
-                {
-                  copyArray = pattern[k].ToCharArray();
-                  for (int j = 0; j < matrixSize; j++)
-                  {
-                    matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-                  }
-                }
-              }
-
-              matrixClone = (int[,])matrix.Clone();
-
-              #region Verticle Line and Horizontal Line Checks
-
-
-              //string[,] check = new string[2, matrixSize];
-
-              //string horCheck = "";
-              ////string verCheck = "";
-
-              //int horCount = 0, verCount = 0;
-
-
-              //for (int k = 0; k < matrixSize; k++)
-              //{
-              //  horCheck = "";
-              //  //verCheck = "";
-              //  for (int j = 0; j < matrixSize; j++)
-              //  {
-              //    horCheck += matrix[k, j];
-              //    //verCheck += matrix[j, k];
-              //  }
-
-              //  if (horCheck.Contains("1"))
-              //    check[0, k] = "1";
-              //  else
-              //    check[0, k] = "0";
-
-              //  //  if (verCheck.Contains("1"))
-              //  //    check[1, k] = "1";
-              //  //  else
-              //  //    check[1, k] = "0";
-              //}
-
-              //for (int j = 0; j < matrixSize; j++)
-              //{
-              //  if (check[0, j] == "1")
-              //  {
-              //    horCount++;
-              //  }
-              //  //  if (check[1, j] == "1")
-              //  //  {
-              //  //    verCount++;
-              //  //  }
-              //}
-
-              //int actualHorCount = 0, actualVerCount = 0;
-
-              //for (int j = 0; j < matrixSize; j++)
-              //{
-              //  if (check[0, j] == "1")
-              //  {
-              //    actualHorCount++;
-              //    if (j + 1 < matrixSize && check[0, j + 1] == "1")
-              //    {
-              //      continue;
-              //    }
-              //    else
-              //    {
-              //      break;
-              //    }
-              //  }
-
-
-              //  //  if (check[1, j] == "1")
-              //  //  {
-              //  //    actualVerCount++;
-              //  //  }
-              //}
-
-              //if (horCount != actualHorCount) //|| verCount != actualVerCount)
-              //{
-              //  patternCheck = false;
-              //}
-
-              #endregion
-              // Pattern Check is true && index is at maximum size of matrix. 
-              if (patternCheck && index == matrixSize - 1)
-              {
-                ContinuityCheck();
-              }
-            }
-          }
-          if (patternCheck || index == 0)
-          {
-            GenMatrixPattern(index + 1, pattern);
-            recursiveCalls++;
-          }
-        }
-      }
-      else if (patternCheck)
-      {
-        patternCount++;
-        //MatrixList.Add(PrintPattern(pattern));
-      }
-    }
-
-
-
-    #region Possible Pruning methods
-    /// Back up 
-    //   private void GenPatterns(int index)
-    //{
-    //  if (index<(matrixSize* matrixSize))  /// Extend pattern
-    //  {
-    //    recursiveCalls++;
-    //    pattern[index] = '1';
-    //    GenPatterns(index + 1);
-
-    //    pattern[index] = '0';
-    //    GenPatterns(index + 1);
-    //  }
-    //  else
-    //  {
-    //    if (TestPattern())
-    //      patternCount++;
-    //      //MatrixList.Add(PrintPattern());
-    //  }
-    //}
-
-
-
-    //private void GenPatterns(int index)
-    //{
-    //  string finalPattern;
-
-    //  if (index < (matrixSize))  /// Extend pattern
-    //  {
-    //    pattern[index] = '1';
-    //    GenPatterns(index + 1);
-
-    //    pattern[index] = '0';
-    //    GenPatterns(index + 1);
-    //  }
-    //  else
-    //  {
-    //    finalPattern = "";
-    //    foreach (char ch in pattern)
-    //      finalPattern += ch;
-    //    generatedRows.Add(finalPattern);
-    //  }
-    //}
-
-    //private void GenMatrixPattern(int index, List<string> pattern)
-    //{
-    //  char[] copyArray = new char[matrixSize];
-    //  PoolCheckArray = new string[2];
-
-    //  if (index < (matrixSize))
-    //  {
-    //    for (int i = 0; i < generatedRows.Count; i++)
-    //    {
-    //      pattern[index] = (generatedRows[i]);
-    //      if (index != 0)
-    //      {
-    //        PoolCheckArray[0] = pattern[index - 1];
-    //        PoolCheckArray[1] = pattern[index];
-
-    //        // Sets a value to true or false;
-    //        if (PoolCheck(PoolCheckArray))
-    //        {
-    //          //for (int j = 0; j < matrixSize; j++)
-    //          //{
-    //          //  if (pattern[j].Contains("1"))
-    //          //    boolList += "1";
-    //          //  else
-    //          //    boolList += "0";
-    //          //}
-
-    //          //// Check if a row has a 1, if a row between two rows that have a one is zero it 
-    //          //// is not continuous. 
-    //          //if (boolList.Contains("101"))
-    //          //{
-    //          //  patternCheck = false;
-    //          //}
-    //        }
-
-    //      }
-    //      if (patternCheck || index == 0)
-    //      {
-    //        GenMatrixPattern(index + 1, pattern);
-    //        recursiveCalls++;
-    //      }
-    //    }
-    //  }
-    //  else if (patternCheck)
-    //  {
-
-    //    // Copying current pattern into matrix
-    //    for (int k = 0; k < matrixSize; k++)
-    //    {
-    //      copyArray = pattern[k].ToCharArray();
-    //      for (int j = 0; j < matrixSize; j++)
-    //      {
-    //        matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-    //      }
-    //    }
-    //    matrixClone = (int[,])matrix.Clone();
-
-    //    if (ContinuityCheck())
-    //    {
-    //      patternCount++;
-    //      //MatrixList.Add(PrintPattern(pattern));
-    //    }
-    //  }
-    //}
-    #endregion
-
-    /// <summary>
-    ///    First load's the pattern into the matrix, then makes a clone of the matrix for the 
-    ///     continuity check then finally returns a value based on weather the poolCheck, and 
-    ///     continuity check go through. 
-    /// </summary>
-    private bool TestPattern()
-    {
-      patternCheck = true;
-
-      int index = 0; 
-
-      for(int row = 0; row < matrixSize; row++)
-      {
-        for(int col = 0; col < matrixSize; col++)
-        {
-          matrix[row, col] = Int32.Parse(Convert.ToString(pattern[index]));
-          index++;
-        }
-      }
-
-      matrixClone = (int[,])matrix.Clone();
-
-      if (PoolCheck())
-      {
-        if (ContinuityCheck())
-        {
-          patternCheck = true;
-        }
-      }
-      return patternCheck;
-    }
-
-    private void CopyMatrix(List<char> pattern)
-    {
-      int index = 0;
-
-      for(int row = 0; row < matrixSize; row++)
-      {
-        for (int col = 0; col < matrixSize; col++)
-        {
-          if (!(pattern[index] == ' '))
-          {
-
-            matrix[row, col] = Int32.Parse(Convert.ToString(pattern[index]));
-            index++;
-          }
-        }
-      }
-    }
-
-    //// <summary>
-    ////   Converts the good patterns to a string of characters to more easily store the values. 
-    //// </summary>
-    private int[,] PrintPattern()
-    {
-      int[,] patternMatrix = new int[matrixSize, matrixSize];
-      int index = 0; 
-
-      for(int i = 0; i < matrixSize; i++)
-      {
-        for (int j = 0; j < matrixSize; j++)
-        {
-          //error
-          patternMatrix[i, j] = Int32.Parse(Convert.ToString(pattern[index]));
-          index++;
-        }
-      }
-      return patternMatrix;
-    }
-
     private void createReportToolStripMenuItem_Click(object sender, EventArgs e)
     {
       CreateReport();
-    }
-
-    private int[,] PrintPattern(List<string> pattern)
-    {
-      int[,] patternMatrix = new int[matrixSize, matrixSize];
-      char[] tmpArray = new char[matrixSize];
-      int index;
-
-      for (int i = 0; i < matrixSize; i++)
-      {
-        tmpArray = pattern[i].ToCharArray();
-        index = 0; 
-        for (int j = 0; j < matrixSize; j++)
-        {
-          //error
-          patternMatrix[i, j] = Int32.Parse(Convert.ToString(tmpArray[index]));
-          index++;
-        }
-      }
-      return patternMatrix;
     }
 
 

@@ -29,7 +29,6 @@
     private void InitializeComponent()
     {
       this.matrixLabel = new System.Windows.Forms.Label();
-      this.label2 = new System.Windows.Forms.Label();
       this.testBtn = new System.Windows.Forms.Button();
       this.messageLabel = new System.Windows.Forms.Label();
       this.MatrixSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -56,15 +55,6 @@
       this.matrixLabel.Name = "matrixLabel";
       this.matrixLabel.Size = new System.Drawing.Size(0, 13);
       this.matrixLabel.TabIndex = 9;
-      // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(292, 32);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(35, 13);
-      this.label2.TabIndex = 10;
-      this.label2.Text = "Matrix";
       // 
       // testBtn
       // 
@@ -95,9 +85,9 @@
             "6",
             "7",
             "8"});
-      this.MatrixSizeComboBox.Location = new System.Drawing.Point(89, 37);
+      this.MatrixSizeComboBox.Location = new System.Drawing.Point(87, 35);
       this.MatrixSizeComboBox.Name = "MatrixSizeComboBox";
-      this.MatrixSizeComboBox.Size = new System.Drawing.Size(40, 21);
+      this.MatrixSizeComboBox.Size = new System.Drawing.Size(50, 21);
       this.MatrixSizeComboBox.TabIndex = 14;
       this.MatrixSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.CmbBoxMSize_SelectedIndexChanged);
       // 
@@ -163,7 +153,7 @@
       // matrixSizeLabel
       // 
       this.matrixSizeLabel.AutoSize = true;
-      this.matrixSizeLabel.Location = new System.Drawing.Point(13, 40);
+      this.matrixSizeLabel.Location = new System.Drawing.Point(13, 37);
       this.matrixSizeLabel.Name = "matrixSizeLabel";
       this.matrixSizeLabel.Size = new System.Drawing.Size(76, 13);
       this.matrixSizeLabel.TabIndex = 18;
@@ -179,14 +169,20 @@
       this.clearBtn.UseVisualStyleBackColor = true;
       this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
       // 
+      // myWorker
+      // 
+      this.myWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.myWorker_DoWork);
+      this.myWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.myWorker_RunWorkerCompleted);
+      // 
       // timeLabel
       // 
       this.timeLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.timeLabel.Location = new System.Drawing.Point(161, 40);
+      this.timeLabel.Location = new System.Drawing.Point(143, 35);
       this.timeLabel.Name = "timeLabel";
-      this.timeLabel.Size = new System.Drawing.Size(89, 18);
+      this.timeLabel.Size = new System.Drawing.Size(127, 21);
       this.timeLabel.TabIndex = 21;
       this.timeLabel.Text = "Time :";
+      this.timeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // CountLabel
       // 
@@ -221,7 +217,6 @@
       this.Controls.Add(this.buttonPanel);
       this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.testBtn);
-      this.Controls.Add(this.label2);
       this.Controls.Add(this.matrixLabel);
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
@@ -236,7 +231,6 @@
 
     #endregion
     private System.Windows.Forms.Label matrixLabel;
-    private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Button testBtn;
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ComboBox MatrixSizeComboBox;

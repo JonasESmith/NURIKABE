@@ -188,7 +188,7 @@ namespace NurikabeApp
     ///     makes sure that all remaining patterns are not containing a pool. 
     /// </summary>
     
-    public void GeneratePattern(int index, List<string> pattern, ref int patternCount)
+    public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
     {
       char[] copyArray = new char[matrixSize];
       PoolCheckArray = new string[2];
@@ -227,7 +227,7 @@ namespace NurikabeApp
           }
           if (patternCheck || index == 0)
           {
-            GeneratePattern(index + 1, pattern, ref patternCount);
+            GeneratePattern(index + 1, pattern, ref patternCount, ref recursiveCalls);
             recursiveCalls++;
           }
         }
