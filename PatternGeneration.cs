@@ -254,7 +254,7 @@ namespace NurikabeApp
       int[,] newMatrix = new int[matrixSize, matrixSize];
 
       for(int k = 0; k < matrixSize; k++)
-                    {
+      {
         if (!String.IsNullOrEmpty(pattern[k]))
         {
           char[] copyArray = pattern[k].ToCharArray();
