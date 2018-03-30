@@ -20,6 +20,7 @@ using System.Drawing;
 using System.IO;
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace NurikabeApp
 {
@@ -53,6 +54,7 @@ namespace NurikabeApp
     List<int[,]> MatrixList    = new List<int[,]>();
     List<char>   pattern       = new List<char>();
 
+    Thread[] ThreadArray;
     int[,]   matrixClone, matrix;
     int      matrixSize,  area, patternCount, recursiveCalls;
 
@@ -305,7 +307,33 @@ namespace NurikabeApp
       for (int i = 0; i < matrixSize; i++)
         localPattern.Add("");
 
+      int numOfThreads = Convert.ToInt32((Math.Pow(2, 10)));
+
       generator.GenerateRows(0);
+      /// <summary>
+      ///   Bellow will have the ability to organize the rows based on number of 1's. This is
+      ///     Not working as of now. 
+      /// </summary>
+      // generator.OrganizeRows();
+
+      /// <summary>
+      ///   This could potentially allow for multiThreading of the GeneratePatterns() method
+      ///     This code is modeled after the CH16Prb2B given to us froim Dr. Oaks. It seems
+      ///     kind of weird honestly. 
+      /// </summary>
+
+      //ThreadArray = new Thread[numOfThreads + 1];
+      //for (int i = 1; i < numOfThreads; i++)
+      //{
+      //  ThreadArray[i] = new Thread[generator.GeneratePattern];
+      //}
+
+
+      //for (int i = 1; i < numOfThreads; i++)
+      //{
+      //  ThreadArray[i].Start(i);
+      //}
+
       generator.GeneratePattern(0, localPattern, ref patternCount, ref recursiveCalls);
 
       timer.Stop();
@@ -521,7 +549,7 @@ namespace NurikabeApp
 
     private void createReportToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      CreateReport();
+      generator.CreateReport();
     }
 
 
@@ -554,31 +582,6 @@ namespace NurikabeApp
     private void PatternMessage(string message)
     {
       messageLabel.Text = message;
-    }
-
-    private void CreateReport()
-    {
-      StreamWriter sw = File.CreateText(path);
-      sw.Flush();
-      int index = 1;
-      string margin = "     ";
-
-      foreach(int[,] matrix in MatrixList)
-      {
-        sw.WriteLine("{0,-5}  ", (index + "."));
-
-        for (int i = 0; i < matrixSize; i++)
-        {
-          sw.Write(margin);
-          for (int j = 0; j < matrixSize; j++)
-          {
-            sw.Write(matrix[i, j] + " ");
-          }
-          sw.WriteLine();
-        }
-        sw.WriteLine();
-        index++;
-      } sw.Close();
     }
 
     private void UpdateGenerationLabels()

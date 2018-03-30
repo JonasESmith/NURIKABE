@@ -181,7 +181,7 @@
       this.timeLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
       this.timeLabel.Location = new System.Drawing.Point(143, 35);
       this.timeLabel.Name = "timeLabel";
-      this.timeLabel.Size = new System.Drawing.Size(127, 21);
+      this.timeLabel.Size = new System.Drawing.Size(107, 21);
       this.timeLabel.TabIndex = 21;
       this.timeLabel.Text = "Time :";
       this.timeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -193,7 +193,7 @@
       this.CountLabel.Name = "CountLabel";
       this.CountLabel.Size = new System.Drawing.Size(109, 23);
       this.CountLabel.TabIndex = 22;
-      this.CountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.CountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // RecurLabel
       // 
@@ -202,7 +202,7 @@
       this.RecurLabel.Name = "RecurLabel";
       this.RecurLabel.Size = new System.Drawing.Size(109, 23);
       this.RecurLabel.TabIndex = 23;
-      this.RecurLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.RecurLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // Nurikabe
       // 

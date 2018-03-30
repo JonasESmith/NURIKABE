@@ -1,18 +1,21 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.ComponentModel;
+using System.IO;
 
 namespace NurikabeApp
 {
   class PatternGeneration
   {
+    string path = "pattern.txt";
+
     List<string> generatedRows = new List<string>();
     List<int[,]> MatrixList = new List<int[,]>();
     List<char> pattern;
 
     string[] PoolCheckArray;
     int[,] matrixClone, matrix;
-    int matrixSize, area, recursiveCalls;
+    int matrixSize, area;
 
     bool patternCheck;
 
@@ -129,7 +132,11 @@ namespace NurikabeApp
       ///    If the method call above does not return the total count of water blocks then we can 
       ///     conclude the water is not continuous.
       /// </summary> 
-      if (streamCount != waterCount)
+      if (streamCount == waterCount)
+      {
+        patternCheck = true;
+      }
+      else
       {
         patternCheck = false;
       }
@@ -154,6 +161,11 @@ namespace NurikabeApp
         }
       }
       return count;
+    }
+
+    public void OrganizeRows()
+    {
+
     }
 
     /// <summary>
@@ -192,7 +204,7 @@ namespace NurikabeApp
     
     public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
     {
-      // Reasonable check for now, this blocks Main if updated every time this method gets call.
+      // Reasonable check for now, this blocks Main if updated every time this method gets called.
       if (recursiveCalls % 1000 == 0)
         worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
 
@@ -224,11 +236,50 @@ namespace NurikabeApp
               }
 
               matrixClone = (int[,])matrix.Clone();
-              // Pattern Check is true && index is at maximum size of matrix. 
-              if (patternCheck && index == matrixSize - 1)
+
+              if(ContinuityCheck())
               {
-                ContinuityCheck();
+                //1 1 0   1 1 0
+                //1 0 1   0 0 0
+                //0 0 0   1 1 1
               }
+              else
+              {
+                bool test = patternCheck;
+                // add the row bellow if it is also continuous continue
+                // However this would also have to do a pool check when the new row is added in!
+                if (index < matrixSize - 1) // && !pattern[index].Contains("1"))
+                {
+                  for (int nun = 0; nun < generatedRows.Count; nun++)
+                  {
+
+                    pattern[index + 1] = generatedRows[nun];
+
+                    for (int k = 0; k < matrixSize; k++)
+                    {
+                      if (!String.IsNullOrEmpty(pattern[k]))
+                      {
+                        copyArray = pattern[k].ToCharArray();
+                        for (int j = 0; j < matrixSize; j++)
+                        {
+                          matrix[k, j] = Int32.Parse(copyArray[j].ToString());
+                        }
+                      }
+                    }
+
+                    matrixClone = (int[,])matrix.Clone();
+
+                    if (ContinuityCheck())
+                      goto done;
+                  }
+                }
+                done : ;
+              }
+              //// Pattern Check is true && index is at maximum size of matrix. 
+              //if (patternCheck && index == matrixSize - 1)
+              //{
+              //  ContinuityCheck();
+              //}
             }
           }
           if (patternCheck || index == 0)
@@ -241,152 +292,9 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
-        //MatrixList.Add(PrintPattern(pattern));
+        MatrixList.Add(PrintPattern(pattern));
       }
     }
-
-
-
-    #region Possible Pruning methods
-    /// Back up 
-    //   private void GenPatterns(int index)
-    //{
-    //  if (index<(matrixSize* matrixSize))  /// Extend pattern
-    //  {
-    //    recursiveCalls++;
-    //    pattern[index] = '1';
-    //    GenPatterns(index + 1);
-
-    //    pattern[index] = '0';
-    //    GenPatterns(index + 1);
-    //  }
-    //  else
-    //  {
-    //    if (TestPattern())
-    //      patternCount++;
-    //      //MatrixList.Add(PrintPattern());
-    //  }
-    //}
-
-
-
-    //private void GenPatterns(int index)
-    //{
-    //  string finalPattern;
-
-    //  if (index < (matrixSize))  /// Extend pattern
-    //  {
-    //    pattern[index] = '1';
-    //    GenPatterns(index + 1);
-
-    //    pattern[index] = '0';
-    //    GenPatterns(index + 1);
-    //  }
-    //  else
-    //  {
-    //    finalPattern = "";
-    //    foreach (char ch in pattern)
-    //      finalPattern += ch;
-    //    generatedRows.Add(finalPattern);
-    //  }
-    //}
-
-    //private void GenMatrixPattern(int index, List<string> pattern)
-    //{
-    //  char[] copyArray = new char[matrixSize];
-    //  PoolCheckArray = new string[2];
-
-    //  if (index < (matrixSize))
-    //  {
-    //    for (int i = 0; i < generatedRows.Count; i++)
-    //    {
-    //      pattern[index] = (generatedRows[i]);
-    //      if (index != 0)
-    //      {
-    //        PoolCheckArray[0] = pattern[index - 1];
-    //        PoolCheckArray[1] = pattern[index];
-
-    //        // Sets a value to true or false;
-    //        if (PoolCheck(PoolCheckArray))
-    //        {
-    //          //for (int j = 0; j < matrixSize; j++)
-    //          //{
-    //          //  if (pattern[j].Contains("1"))
-    //          //    boolList += "1";
-    //          //  else
-    //          //    boolList += "0";
-    //          //}
-
-    //          //// Check if a row has a 1, if a row between two rows that have a one is zero it 
-    //          //// is not continuous. 
-    //          //if (boolList.Contains("101"))
-    //          //{
-    //          //  patternCheck = false;
-    //          //}
-    //        }
-
-    //      }
-    //      if (patternCheck || index == 0)
-    //      {
-    //        GenMatrixPattern(index + 1, pattern);
-    //        recursiveCalls++;
-    //      }
-    //    }
-    //  }
-    //  else if (patternCheck)
-    //  {
-
-    //    // Copying current pattern into matrix
-    //    for (int k = 0; k < matrixSize; k++)
-    //    {
-    //      copyArray = pattern[k].ToCharArray();
-    //      for (int j = 0; j < matrixSize; j++)
-    //      {
-    //        matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-    //      }
-    //    }
-    //    matrixClone = (int[,])matrix.Clone();
-
-    //    if (ContinuityCheck())
-    //    {
-    //      patternCount++;
-    //      //MatrixList.Add(PrintPattern(pattern));
-    //    }
-    //  }
-    //}
-    #endregion
-
-    /// <summary>
-    ///    First load's the pattern into the matrix, then makes a clone of the matrix for the 
-    ///     continuity check then finally returns a value based on weather the poolCheck, and 
-    ///     continuity check go through. 
-    /// </summary>
-    //private bool TestPattern()
-    //{
-    //  patternCheck = true;
-
-    //  int index = 0;
-
-    //  for (int row = 0; row < matrixSize; row++)
-    //  {
-    //    for (int col = 0; col < matrixSize; col++)
-    //    {
-    //      matrix[row, col] = Int32.Parse(Convert.ToString(pattern[index]));
-    //      index++;
-    //    }
-    //  }
-
-    //  matrixClone = (int[,])matrix.Clone();
-
-    //  if (PoolCheck())
-    //  {
-    //    if (ContinuityCheck())
-    //    {
-    //      patternCheck = true;
-    //    }
-    //  }
-    //  return patternCheck;
-    //}
 
     private void CopyMatrix(List<char> pattern)
     {
@@ -427,6 +335,32 @@ namespace NurikabeApp
         }
       }
       return patternMatrix;
+    }
+
+    public void CreateReport()
+    {
+      StreamWriter sw = File.CreateText(path);
+      sw.Flush();
+      int index = 1;
+      string margin = "     ";
+
+      foreach (int[,] matrix in MatrixList)
+      {
+        sw.WriteLine("{0,-5}  ", (index + "."));
+
+        for (int i = 0; i < matrixSize; i++)
+        {
+          sw.Write(margin);
+          for (int j = 0; j < matrixSize; j++)
+          {
+            sw.Write(matrix[i, j] + " ");
+          }
+          sw.WriteLine();
+        }
+        sw.WriteLine();
+        index++;
+      }
+      sw.Close();
     }
   }
 }
