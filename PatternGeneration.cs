@@ -166,10 +166,10 @@ namespace NurikabeApp
 
       if (index < (matrixSize))
       {
-        pattern[index] = '0';
+        pattern[index] = '1';
         GenerateRows(index + 1);
 
-        pattern[index] = '1';
+        pattern[index] = '0';
         GenerateRows(index + 1);
       }
       else
