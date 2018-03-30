@@ -14,7 +14,6 @@ namespace NurikabeApp
     List<char> pattern;
 
     string[] PoolCheckArray;
-    int[,] matrixClone, matrix;
     int matrixSize, area;
 
     bool patternCheck;
@@ -23,9 +22,7 @@ namespace NurikabeApp
                                                    
     public PatternGeneration(int size, BackgroundWorker backgroundWorker)             
     {                                              
-      matrixSize = size;                           
-      matrix = new int[matrixSize, matrixSize];    
-      matrixClone = new int[matrixSize, matrixSize];
+      matrixSize = size;
 
       worker = backgroundWorker;
                                                    
@@ -57,15 +54,15 @@ namespace NurikabeApp
       return patternCheck;
     }
 
-    private int Area(int row, int col)
+    private int AreaForMatrix(int[,] matrix, int row, int col)
     {
       /// <summary> 
       ///    Although this conditional statement is not needed for the first iteration it will be
       ///     utilized across all recuring iterations.
       /// </summary> 
-      if (matrixClone[row, col] == 1)
+      if (matrix[row, col] == 1)
       {
-        matrixClone[row, col] = 3;
+        matrix[row, col] = 3;
         area = 1;
 
         /// <summary>
@@ -73,13 +70,13 @@ namespace NurikabeApp
         ///     the testing Matrix.
         //</summary>
         if (col + 1 <= matrixSize - 1)
-          area += Area(row, col + 1);
+          area += AreaForMatrix(matrix, row, col + 1);
         if (row + 1 <= matrixSize - 1)
-          area += Area(row + 1, col);
+          area += AreaForMatrix(matrix, row + 1, col);
         if (col - 1 >= 0)
-          area += Area(row, col - 1);
+          area += AreaForMatrix(matrix, row, col - 1);
         if (row - 1 >= 0)
-          area += Area(row - 1, col);
+          area += AreaForMatrix(matrix, row - 1, col);
       }
       else
       {
@@ -88,10 +85,9 @@ namespace NurikabeApp
       return area;
     }
 
-
-    private bool ContinuityCheck()
+    private bool ContinuityCheckMatrix(int[,] matrix)
     {
-      int waterCount = this.waterCount();
+      int waterCount = WaterCountForMatrix(matrix);
       int streamCount;
 
       int row = 0, col = 0;
@@ -118,7 +114,7 @@ namespace NurikabeApp
         /// <summary>
         ///    Calls recursive method to count all countinuous blocks of water
         /// </summary>
-        streamCount = Area(row, col);
+        streamCount = AreaForMatrix(matrix, row, col);
       }
       else
       {
@@ -148,7 +144,7 @@ namespace NurikabeApp
     //// <summary>
     ////    Finds the total number of "water" blocks to test against the continuous blocks
     //// </summary>
-    private int waterCount()
+    private int WaterCountForMatrix(int[,] matrix)
     {
       int count = 0;
 
@@ -161,11 +157,6 @@ namespace NurikabeApp
         }
       }
       return count;
-    }
-
-    public void OrganizeRows()
-    {
-
     }
 
     /// <summary>
@@ -208,7 +199,6 @@ namespace NurikabeApp
       if (recursiveCalls % 1000 == 0)
         worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
 
-      char[] copyArray = new char[matrixSize];
       PoolCheckArray = new string[2];
 
       if (index < matrixSize)
@@ -223,22 +213,7 @@ namespace NurikabeApp
 
             if (PoolCheck(PoolCheckArray))
             {
-              for (int k = 0; k < matrixSize; k++)
-              {
-                
-                if (!String.IsNullOrEmpty(pattern[k]))
-                {
-                  copyArray = pattern[k].ToCharArray();
-                  for (int j = 0; j < matrixSize; j++)
-                  {
-                    matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-                  }
-                }
-              }
-
-              matrixClone = (int[,])matrix.Clone();
-
-              if(ContinuityCheck())
+              if(ContinuityCheckMatrix(CopyMatrix(pattern)))
               {
                 // Just needs to be empty for now. 
               }
@@ -254,21 +229,7 @@ namespace NurikabeApp
 
                     pattern[index + 1] = generatedRows[nun];
 
-                    for (int k = 0; k < matrixSize; k++)
-                    {
-                      if (!String.IsNullOrEmpty(pattern[k]))
-                      {
-                        copyArray = pattern[k].ToCharArray();
-                        for (int j = 0; j < matrixSize; j++)
-                        {
-                          matrix[k, j] = Int32.Parse(copyArray[j].ToString());
-                        }
-                      }
-                    }
-
-                    matrixClone = (int[,])matrix.Clone();
-
-                    if (ContinuityCheck())
+                    if (ContinuityCheckMatrix(CopyMatrix(pattern)))
                       goto done;
                   }
                 }
@@ -295,22 +256,23 @@ namespace NurikabeApp
       }
     }
 
-    private void CopyMatrix(List<char> pattern)
+    private int[,] CopyMatrix(List<string> pattern)
     {
-      int index = 0;
+      int[,] newMatrix = new int[matrixSize, matrixSize];
 
-      for (int row = 0; row < matrixSize; row++)
-      {
-        for (int col = 0; col < matrixSize; col++)
+      for(int k = 0; k < matrixSize; k++)
+                    {
+        if (!String.IsNullOrEmpty(pattern[k]))
         {
-          if (!(pattern[index] == ' '))
+          char[] copyArray = pattern[k].ToCharArray();
+          for (int j = 0; j < matrixSize; j++)
           {
-
-            matrix[row, col] = Int32.Parse(Convert.ToString(pattern[index]));
-            index++;
+            newMatrix[k, j] = Int32.Parse(copyArray[j].ToString());
           }
         }
       }
+
+      return newMatrix;
     }
 
     //// <summary>
