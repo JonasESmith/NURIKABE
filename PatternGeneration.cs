@@ -97,9 +97,11 @@ namespace NurikabeApp
             {
               if (ContinuityCheckMatrix(CopyMatrix(pattern)))
               {
+
               }
               else
               {
+                if (index < matrixSize - 1)
                 {
                   for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
