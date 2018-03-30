@@ -115,6 +115,8 @@ namespace NurikabeApp
         }
         done:;
 
+        matrixClone = (int[,])matrix.Clone();
+
         /// <summary>
         ///    Calls recursive method to count all countinuous blocks of water
         /// </summary>
@@ -223,22 +225,21 @@ namespace NurikabeApp
 
             if (PoolCheck(PoolCheckArray))
             {
-              for (int k = 0; k < matrixSize; k++)
+              for (int row = 0; row < matrixSize; row++)
               {
-                
-                if (!String.IsNullOrEmpty(pattern[k]))
+                if (!String.IsNullOrEmpty(pattern[row]))
                 {
-                  copyArray = pattern[k].ToCharArray();
-                  for (int j = 0; j < matrixSize; j++)
+                  copyArray = pattern[row].ToCharArray();
+                  for (int col = 0; col < matrixSize; col++)
                   {
-                    matrix[k, j] = Int32.Parse(copyArray[j].ToString());
+                    matrix[row, col] = Int32.Parse(copyArray[col].ToString());
                   }
                 }
               }
 
               matrixClone = (int[,])matrix.Clone();
 
-              if(ContinuityCheck())
+              if (ContinuityCheck())
               {
                 // Just needs to be empty for now. 
               }
@@ -247,7 +248,7 @@ namespace NurikabeApp
                 bool test = patternCheck;
                 // add the row bellow if it is also continuous continue
                 // However this would also have to do a pool check when the new row is added in!
-                if (index < matrixSize - 1) // && !pattern[index].Contains("1"))
+                if ((index < matrixSize - 1))// && !pattern[index].Contains("1"))
                 {
                   for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
@@ -288,7 +289,7 @@ namespace NurikabeApp
       }
     }
 
-    private void CopyMatrix(List<char> pattern)
+    private void CopyMatrix(List<string> pattern)
     {
       int index = 0;
 
@@ -296,10 +297,10 @@ namespace NurikabeApp
       {
         for (int col = 0; col < matrixSize; col++)
         {
-          if (!(pattern[index] == ' '))
+          if (!(pattern[index] == " "))
           {
 
-            matrix[row, col] = Int32.Parse(Convert.ToString(pattern[index]));
+            matrix[row, col] = Int32.Parse(pattern[index]);
             index++;
           }
         }
