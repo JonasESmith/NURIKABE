@@ -211,11 +211,11 @@ namespace NurikabeApp
       char[] copyArray = new char[matrixSize];
       PoolCheckArray = new string[2];
 
-      if (index < (matrixSize))
+      if (index < matrixSize)
       {
         for (int i = 0; i < generatedRows.Count; i++)
         {
-          pattern[index] = (generatedRows[i]);
+          pattern[index] = generatedRows[i];
           if (index != 0)
           {
             PoolCheckArray[0] = pattern[index - 1];
