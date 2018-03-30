@@ -19,18 +19,150 @@ namespace NurikabeApp
     bool patternCheck;
 
     private BackgroundWorker worker;
-                                                   
-    public PatternGeneration(int size, BackgroundWorker backgroundWorker)             
-    {                                              
+
+    // ************************************************************************************** //
+    // 1. INITIALIZERS                                                                        //
+    // ************************************************************************************** //
+
+    #region Init
+    public PatternGeneration(int size, BackgroundWorker backgroundWorker)
+    {
       matrixSize = size;
 
       worker = backgroundWorker;
-                                                   
-      pattern = new List<char>();                  
+
+      pattern = new List<char>();
       for (int i = 0; i < matrixSize; i++)
         pattern.Add(' ');
     }
+    #endregion
 
+    // ************************************************************************************** //
+    // 1. PUBLIC METHODS                                                                      //
+    // ************************************************************************************** //
+
+    #region Public methods
+    /// <summary>
+    ///   This produces all possible patterns for a row of n sizes, by first putting a water block
+    ///     in each section of the pattern, then switching them to zeros as the method continues. 
+    /// </summary>
+    public void GenerateRows(int index)
+    {
+      string finalPattern;
+
+      if (index < (matrixSize))
+      {
+        pattern[index] = '1';
+        GenerateRows(index + 1);
+
+        pattern[index] = '0';
+        GenerateRows(index + 1);
+      }
+      else
+      {
+        finalPattern = "";
+        foreach (char ch in pattern)
+          finalPattern += ch;
+        generatedRows.Add(finalPattern);
+      }
+    }
+
+    /// <summary>
+    ///   CHANGES CAN BE MADE HERE!
+    ///     Here more than anywhere major changes can be made to improve the efficiency of producing good patterns. 
+    /// 
+    ///   This recursive method starts by entering the first patern into each row, then switching it 
+    ///     with each iteration. It first checks for a pool when a new row is added. By doing this it
+    ///     makes sure that all remaining patterns are not containing a pool. 
+    /// </summary>
+
+    public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
+    {
+      // Reasonable check for now, this blocks Main if updated every time this method gets called.
+      if (recursiveCalls % 1000 == 0)
+        worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
+
+      PoolCheckArray = new string[2];
+
+      if (index < matrixSize)
+      {
+        for (int i = 0; i < generatedRows.Count; i++)
+        {
+          pattern[index] = generatedRows[i];
+          if (index != 0)
+          {
+            PoolCheckArray[0] = pattern[index - 1];
+            PoolCheckArray[1] = pattern[index];
+
+            if (PoolCheck(PoolCheckArray))
+            {
+              if (ContinuityCheckMatrix(CopyMatrix(pattern)))
+              {
+                // Just needs to be empty for now. 
+              }
+              else
+              {
+                // add the row bellow if it is also continuous continue
+                // However this would also have to do a pool check when the new row is added in!
+                if (index < matrixSize - 1)// && !pattern[index].Contains("1"))
+                {
+                  for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
+                  {
+                    pattern[index + 1] = generatedRows[rowIndex];
+
+                    if (ContinuityCheckMatrix(CopyMatrix(pattern)))
+                      goto done;
+                  }
+                }
+                done:;
+              }
+            }
+          }
+          if (patternCheck || index == 0)
+          {
+            GeneratePattern(index + 1, pattern, ref patternCount, ref recursiveCalls);
+            recursiveCalls++;
+          }
+        }
+      }
+      else if (patternCheck)
+      {
+        patternCount++;
+      }
+    }
+
+    public void CreateReport()
+    {
+      StreamWriter sw = File.CreateText(path);
+      sw.Flush();
+      int index = 1;
+      string margin = "     ";
+
+      foreach (int[,] matrix in MatrixList)
+      {
+        sw.WriteLine("{0,-5}  ", (index + "."));
+
+        for (int i = 0; i < matrixSize; i++)
+        {
+          sw.Write(margin);
+          for (int j = 0; j < matrixSize; j++)
+          {
+            sw.Write(matrix[i, j] + " ");
+          }
+          sw.WriteLine();
+        }
+        sw.WriteLine();
+        index++;
+      }
+      sw.Close();
+    }
+    #endregion
+
+    // ************************************************************************************** //
+    // 1. PRIVATE METHODS                                                                     //
+    // ************************************************************************************** //
+
+    #region Private methods
     private bool PoolCheck(string[] matrix)
     {
       patternCheck = true;
@@ -121,7 +253,7 @@ namespace NurikabeApp
         if (waterCount == 1)
           streamCount = 1;
         else
-          streamCount = 0; 
+          streamCount = 0;
       }
 
       /// <summary>
@@ -159,100 +291,11 @@ namespace NurikabeApp
       return count;
     }
 
-    /// <summary>
-    ///   This produces all possible patterns for a row of n sizes, by first putting a water block
-    ///     in each section of the pattern, then switching them to zeros as the method continues. 
-    /// </summary>
-    public void GenerateRows(int index)
-    {
-      string finalPattern;
-
-      if (index < (matrixSize))
-      {
-        pattern[index] = '1';
-        GenerateRows(index + 1);
-
-        pattern[index] = '0';
-        GenerateRows(index + 1);
-      }
-      else
-      {
-        finalPattern = "";
-        foreach (char ch in pattern)
-          finalPattern += ch;
-        generatedRows.Add(finalPattern);
-      }
-    }
-
-    /// <summary>
-    ///   CHANGES CAN BE MADE HERE!
-    ///     Here more than anywhere major changes can be made to improve the efficiency of producing good patterns. 
-    /// 
-    ///   This recursive method starts by entering the first patern into each row, then switching it 
-    ///     with each iteration. It first checks for a pool when a new row is added. By doing this it
-    ///     makes sure that all remaining patterns are not containing a pool. 
-    /// </summary>
-    
-    public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
-    {
-      // Reasonable check for now, this blocks Main if updated every time this method gets called.
-      if (recursiveCalls % 1000 == 0)
-        worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
-
-      PoolCheckArray = new string[2];
-
-      if (index < matrixSize)
-      {
-        for (int i = 0; i < generatedRows.Count; i++)
-        {
-          pattern[index] = generatedRows[i];
-          if (index != 0)
-          {
-            PoolCheckArray[0] = pattern[index - 1];
-            PoolCheckArray[1] = pattern[index];
-
-            if (PoolCheck(PoolCheckArray))
-            {
-              if(ContinuityCheckMatrix(CopyMatrix(pattern)))
-              {
-                // Just needs to be empty for now. 
-              }
-              else
-              {
-                // add the row bellow if it is also continuous continue
-                // However this would also have to do a pool check when the new row is added in!
-                if (index < matrixSize - 1)// && !pattern[index].Contains("1"))
-                {
-                  for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
-                  {
-                    pattern[index + 1] = generatedRows[rowIndex];
-
-                    if (ContinuityCheckMatrix(CopyMatrix(pattern)))
-                      goto done;
-                  }
-                }
-                done : ;
-              }
-            }
-          }
-          if (patternCheck || index == 0)
-          {
-            GeneratePattern(index + 1, pattern, ref patternCount, ref recursiveCalls);
-            recursiveCalls++;
-          }
-        }
-      }
-      else if (patternCheck)
-      {
-        patternCount++;
-      }
-    }
-
     private int[,] CopyMatrix(List<string> pattern)
     {
       int[,] newMatrix = new int[matrixSize, matrixSize];
 
-      for(int k = 0; k < matrixSize; k++)
+      for (int k = 0; k < matrixSize; k++)
       {
         if (!String.IsNullOrEmpty(pattern[k]))
         {
@@ -289,31 +332,6 @@ namespace NurikabeApp
       }
       return patternMatrix;
     }
-
-    public void CreateReport()
-    {
-      StreamWriter sw = File.CreateText(path);
-      sw.Flush();
-      int index = 1;
-      string margin = "     ";
-
-      foreach (int[,] matrix in MatrixList)
-      {
-        sw.WriteLine("{0,-5}  ", (index + "."));
-
-        for (int i = 0; i < matrixSize; i++)
-        {
-          sw.Write(margin);
-          for (int j = 0; j < matrixSize; j++)
-          {
-            sw.Write(matrix[i, j] + " ");
-          }
-          sw.WriteLine();
-        }
-        sw.WriteLine();
-        index++;
-      }
-      sw.Close();
-    }
+    #endregion
   }
 }
