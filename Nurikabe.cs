@@ -299,17 +299,6 @@ namespace NurikabeApp
 
       generator = new PatternGeneration(matrixSize, worker);
 
-      patternCount = 0;
-      recursiveCalls = 1;
-
-      List<string> localPattern = new List<string>();
-
-      for (int i = 0; i < matrixSize; i++)
-        localPattern.Add("");
-
-      int numOfThreads = Convert.ToInt32((Math.Pow(2, 10)));
-
-      generator.GenerateRows(0);
       /// <summary>
       ///   Bellow will have the ability to organize the rows based on number of 1's. This is
       ///     Not working as of now. 
@@ -322,7 +311,7 @@ namespace NurikabeApp
       ///     kind of weird honestly. 
       /// </summary>
 
-      generator.GeneratePattern(0, localPattern);
+      //generator.RunSolutionGenerator();
       recursiveCalls = generator.recursiveCalls;
       patternCount = generator.patternCount;
 
@@ -342,7 +331,38 @@ namespace NurikabeApp
     /// </summary>
     private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      myWorker.RunWorkerAsync();
+      timer = new Stopwatch();
+      timer.Start();
+
+      BackgroundWorker worker = sender as BackgroundWorker;
+
+      generator = new PatternGeneration(matrixSize, worker);
+
+      /// <summary>
+      ///   Bellow will have the ability to organize the rows based on number of 1's. This is
+      ///     Not working as of now. 
+      /// </summary>
+      // generator.OrganizeRows();
+
+      /// <summary>
+      ///   This could potentially allow for multiThreading of the GeneratePatterns() method
+      ///     This code is modeled after the CH16Prb2B given to us froim Dr. Oaks. It seems
+      ///     kind of weird honestly. 
+      /// </summary>
+
+      generator.RunSolutionGenerator(SolutionGeneratorFinished);
+      //myWorker.RunWorkerAsync();
+    }
+
+    private void SolutionGeneratorFinished()
+    {
+      recursiveCalls = generator.recursiveCalls;
+      patternCount = generator.patternCount;
+
+      timer.Stop();
+
+      Time = timer.Elapsed.TotalSeconds.ToString();
+      UpdateGenerationLabels();
     }
 
     /// <summary>
