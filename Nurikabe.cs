@@ -1,26 +1,26 @@
-﻿///////////////////////////////////////////////////////////////////////////////////
+﻿/// ///////////////////////////////////////////////////////////////////////////////
 ///                                                                             ///
 ///  Programmers      : Jonas Smith, Andrew Robinson                            /// 
 ///                                                                             ///
 ///  Purpose          : Test Nurikabe patterns, and create a sudoGame of it     ///
 ///                                                                             ///
-///  Code Index       : 1. INITIALIZE ALL VARIABLES FOR THE APPLICATION         ///
-///                     2. BUTTON EVENTS / METHODS                              ///
-///                     3. LOAD EVENTS                                          ///
-///                     4. PATTERN CHECKS/EVENTS/GENERATION                     ///
-///                     5. AXILLARY METHODS                                     ///
-///                     6. FUTURE IDEAS                                         ///
+///  Code Index       : 1. INIT VARIABLES                                       ///
+///                     2. BUTTON EVENTS                                        ///
+///                     3. PATTERN GENERATION                                   ///
+///                     4. LOAD EVENTS                                          ///
+///                     5. PATTERN EVENTS                                       ///
+///                     6. AXILLARY METHODS                                     ///
 ///                                                                             ///
-///////////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading;
 using System.Drawing;
 using System.IO;
 using System;
-using System.ComponentModel;
-using System.Threading;
 
 namespace NurikabeApp
 {
@@ -33,14 +33,14 @@ namespace NurikabeApp
       LoadAssets();
     }
 
-    // ************************************************************************************** //
-    // 1. INITIALIZE ALL VARIABLES FOR THE APPLICATION                                        //
-    // ************************************************************************************** //
+    /* 1. INIT VARIABLES      */
+    #region ---------- init -----------
 
     /// <summary>
     ///   INITIALIZE ALL VARIABLES FOR THE APPLICATION
     /// </summary>
-    #region Initialize all variables for the application
+
+
     string notContinuous = "The pattern is not continuous";
     string containsPool  = "There is a pool in the matrix";
     string goodPattern   = "This is a good pattern!";
@@ -60,14 +60,11 @@ namespace NurikabeApp
 
     static bool patternCheck;
 
-    #endregion 
+    #endregion
+    /* 1. ****** END **********/
 
-
-
-
-    // ************************************************************************************** //
-    // 2. BUTTON EVENTS / METHODS                                                             //
-    // ************************************************************************************** //
+    /* 2. BUTTON EVENTS       */
+    #region ------ button events ------ 
 
     /// <summary>
     ///   This collection of code deal's with all button click events, that is refreshing UI 
@@ -76,7 +73,6 @@ namespace NurikabeApp
     ///     that are passed in either by recursive methods in Pattern Checks or by the user
     ///     playing the simple nurikabe game that I created. 
     /// </summary>
-    #region BUTTON EVENTS / METHODS    
 
     private void LoadButtons(int length)
     {
@@ -285,6 +281,29 @@ namespace NurikabeApp
       LoadAssets();
     }
 
+    /// <summary>
+    ///   Allows the user to view the patterns created if there is a file that was generated to 
+    ///     store the patterns. 
+    /// </summary>
+    private void viewPatternsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      if (File.Exists(path))
+        System.Diagnostics.Process.Start("notepad", path);
+      else
+        MessageBox.Show(path + " does not exist", "Invalid File Name", MessageBoxButtons.OK, 
+                                                                       MessageBoxIcon.Error);
+    }
+
+    #endregion
+    /* 2. ****** END **********/
+
+    /* 3. PATTERN GENERATION  */
+    #region -- generation of patterns -
+    /// <summary>
+    ///   
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void myWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       UpdateGenerationLabels();
@@ -298,18 +317,6 @@ namespace NurikabeApp
       BackgroundWorker worker = sender as BackgroundWorker;
 
       generator = new PatternGeneration(matrixSize);
-
-      /// <summary>
-      ///   Bellow will have the ability to organize the rows based on number of 1's. This is
-      ///     Not working as of now. 
-      /// </summary>
-      // generator.OrganizeRows();
-
-      /// <summary>
-      ///   This could potentially allow for multiThreading of the GeneratePatterns() method
-      ///     This code is modeled after the CH16Prb2B given to us froim Dr. Oaks. It seems
-      ///     kind of weird honestly. 
-      /// </summary>
 
       //generator.RunSolutionGenerator();
       recursiveCalls = generator.recursiveCalls;
@@ -371,35 +378,16 @@ namespace NurikabeApp
       Time = timer.Elapsed.TotalSeconds.ToString();
       UpdateGenerationLabels();
     }
-
-    /// <summary>
-    ///   Allows the user to view the patterns created if there is a file that was generated to 
-    ///     store the patterns. 
-    /// </summary>
-    private void viewPatternsToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      if (File.Exists(path))
-        System.Diagnostics.Process.Start("notepad", path);
-      else
-        MessageBox.Show(path + " does not exist", "Invalid File Name", MessageBoxButtons.OK, 
-                                                                       MessageBoxIcon.Error);
-    }
-
     #endregion
+    /* 3. ****** END **********/
 
-
-
-
-    // ************************************************************************************** //
-    // 3. LOAD EVENTS                                                                         //
-    // ************************************************************************************** //
+    /* 4. LOAD EVENTS         */
+    #region - application load events -
 
     /// <summary>
     ///   This collection of code deal's with most Load Events for the UI that being loading a
     ///     new matrix or loading the assets for refreshing buttons. 
     /// </summary>
-    #region LOAD EVENTS
-
 
     /// <summary>
     ///   Clear's matrix and resizes based on value passed to count. 
@@ -432,20 +420,19 @@ namespace NurikabeApp
       LoadButtons(matrixSize);
     }
     #endregion
+    /* 4. ****** END **********/
 
+    /* 5. PATTERN EVENTS      */
+    #region -- nurikabe game checks ---
 
-
-
-    // ************************************************************************************** //
-    // 4. PATTERN CHECKS/EVENTS/GENERATION                                                    //
-    // ************************************************************************************** //
 
     /// <summary>
     ///   This collection of code deal's with the checks for continuity and all axillary methods 
     ///     to properly check, and test patterns in the matrixes. This is where the efficeinty 
     ///     of the code can improve the most. 
     /// </summary>
-    #region PATTERN CHECKS/EVENTS/GENERATION 
+
+
 
     /// <summary>
     ///   Checks if there are any pools or 2x2 areas on the pattern that are water blocks. 
@@ -582,20 +569,17 @@ namespace NurikabeApp
 
       return patternString;
     }
-    #endregion
+    #endregion              //              // /* */
+    /* 5. ****** END **********/
 
-
-
-
-    // ************************************************************************************** //
-    // 5. AXILLARY METHODS                                                                    //
-    // ************************************************************************************** //
+    /* 6. AXILLARY METHODS    */
+    #region ------ aux methods --------
 
     /// <summary>
     ///   This collection of code deal's with the Messages with the UI and creating reports of 
     ///     the patterns created from the above code to be viewed by the user. 
     /// </summary>
-    #region AXILLARY METHODS 
+
     private void PatternMessage(string message)
     {
       messageLabel.Text = message;
@@ -610,14 +594,6 @@ namespace NurikabeApp
       timeLabel.Update();
     }
     #endregion
+    /* 6. ****** END **********/
   }
 }
-
-// ************************************************************************************** //
-// 6. FUTURE IDEAS                                                                        //
-// ************************************************************************************** //
-
-/// <summary>
-///  Future Ideas     : 1.
-///  
-/// </summary>

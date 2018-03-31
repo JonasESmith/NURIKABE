@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
@@ -9,6 +8,9 @@ namespace NurikabeApp
 {
   class PatternGeneration
   {
+    /* 1. INITIALIZERS        */
+    #region ---------- Init -----------
+
     string path = "pattern.txt";
 
     List<string> generatedRows = new List<string>();
@@ -27,22 +29,15 @@ namespace NurikabeApp
       get { return 2; }
     }
 
-    // ************************************************************************************** //
-    // 1. INITIALIZERS                                                                        //
-    // ************************************************************************************** //
-
-    #region Init
     public PatternGeneration(int size)
     {
       matrixSize = size;
     }
     #endregion
+    /* 1. ****** END **********/
 
-    // ************************************************************************************** //
-    // 1. PUBLIC METHODS                                                                      //
-    // ************************************************************************************** //
-
-    #region Public methods
+    /* 2. PUBLIC METHODS      */
+    #region ------ Public methods -----
     public void RunSolutionGenerator(Action callback, Action ActionFinished)
     {
       GenerateRows(0, null);
@@ -101,12 +96,10 @@ namespace NurikabeApp
       sw.Close();
     }
     #endregion
+    /* 2. ****** END **********/
 
-    // ************************************************************************************** //
-    // 1. PRIVATE METHODS                                                                     //
-    // ************************************************************************************** //
-
-    #region Private methods
+    /* 3. PRIVATE METHODS     */
+    #region ---- Private methods ------
     /// <summary>
     ///   This produces all possible patterns for a row of n sizes, by first putting a water block
     ///     in each section of the pattern, then switching them to zeros as the method continues. 
@@ -174,7 +167,9 @@ namespace NurikabeApp
     }
 
     /// <summary>
-    ///   
+    ///   This method is called from StartPattenChecking(Object obj) Where it divides the number
+    ///     of threads to evenly try each pattern[0] with a unique row. This can still be improved 
+    ///     upon to further pruning. 
     /// </summary>
 
     private void GeneratePattern(int index, List<string> pattern, bool continuous)
@@ -406,5 +401,6 @@ namespace NurikabeApp
       return patternMatrix;
     }
     #endregion
+    /* 3. ****** END **********/
   }
 }
