@@ -24,7 +24,7 @@ namespace NurikabeApp
 
     private int totalNumberOfThreads
     {
-      get { return 5; }
+      get { return 2; }
     }
 
     // ************************************************************************************** //
