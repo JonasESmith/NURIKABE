@@ -33,7 +33,7 @@
       this.MatrixSizeComboBox = new System.Windows.Forms.ComboBox();
       this.buttonPanel = new System.Windows.Forms.Panel();
       this.genButton = new System.Windows.Forms.Button();
-      this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+      this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.generatePatternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.createReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +50,7 @@
       this.possibleCallsDisplay = new System.Windows.Forms.Label();
       this.possibleCallsLabel = new System.Windows.Forms.Label();
       this.timeDisplay = new System.Windows.Forms.Label();
-      this.menuStrip1.SuspendLayout();
+      this.menuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // matrixLabel
@@ -105,15 +105,15 @@
       this.genButton.UseVisualStyleBackColor = true;
       this.genButton.Click += new System.EventHandler(this.genButton_Click);
       // 
-      // menuStrip1
+      // menuStrip
       // 
-      this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
-      this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-      this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(365, 24);
-      this.menuStrip1.TabIndex = 17;
-      this.menuStrip1.Text = "menuStrip1";
+      this.menuStrip.Location = new System.Drawing.Point(0, 0);
+      this.menuStrip.Name = "menuStrip";
+      this.menuStrip.Size = new System.Drawing.Size(365, 24);
+      this.menuStrip.TabIndex = 17;
+      this.menuStrip.Text = "menuStrip1";
       // 
       // fileToolStripMenuItem
       // 
@@ -277,12 +277,12 @@
       this.Controls.Add(this.messageLabel);
       this.Controls.Add(this.testBtn);
       this.Controls.Add(this.matrixLabel);
-      this.Controls.Add(this.menuStrip1);
-      this.MainMenuStrip = this.menuStrip1;
+      this.Controls.Add(this.menuStrip);
+      this.MainMenuStrip = this.menuStrip;
       this.Name = "Nurikabe";
       this.Text = "NURIKABE";
-      this.menuStrip1.ResumeLayout(false);
-      this.menuStrip1.PerformLayout();
+      this.menuStrip.ResumeLayout(false);
+      this.menuStrip.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -294,7 +294,7 @@
     private System.Windows.Forms.ComboBox MatrixSizeComboBox;
     private System.Windows.Forms.Panel buttonPanel;
     private System.Windows.Forms.Button genButton;
-    private System.Windows.Forms.MenuStrip menuStrip1;
+    private System.Windows.Forms.MenuStrip menuStrip;
     private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem generatePatternsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem viewPatternsToolStripMenuItem;
