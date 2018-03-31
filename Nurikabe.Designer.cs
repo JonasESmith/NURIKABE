@@ -79,6 +79,7 @@
       // 
       this.MatrixSizeComboBox.FormattingEnabled = true;
       this.MatrixSizeComboBox.Items.AddRange(new object[] {
+            "2",
             "3",
             "4",
             "5",

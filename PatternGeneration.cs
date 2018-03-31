@@ -14,8 +14,7 @@ namespace NurikabeApp
     List<string> generatedRows = new List<string>();
     List<int[,]> MatrixList    = new List<int[,]>();
 
-    bool     patternCheck;
-    int      matrixSize, area;
+    int matrixSize;
 
     public int recursiveCalls
     { get; private set; }
@@ -26,7 +25,7 @@ namespace NurikabeApp
     private BackgroundWorker worker;
     private int totalNumberOfThreads
     {
-      get { return 1; }
+      get { return 2; }
     }
 
     // ************************************************************************************** //
@@ -129,8 +128,12 @@ namespace NurikabeApp
       for (int i = 0; i < matrixSize; i++)
         pattern.Add("");
 
-      int startPosition = generatedRows.Count - (generatedRows.Count / indicesSide);
-      GeneratePattern(0, indicesSide, pattern, startPosition);
+      bool continuous = true;
+      int startPosition = 0;
+      int endPostion = 16;
+      //int startPosition = generatedRows.Count - (generatedRows.Count / indicesSide);
+      //int endPostion = startPosition + (generatedRows.Count / totalNumberOfThreads);
+      GeneratePattern(0, indicesSide, pattern, startPosition,endPostion , continuous);
     }
 
     /// <summary>
@@ -142,26 +145,27 @@ namespace NurikabeApp
     ///     makes sure that all remaining patterns are not containing a pool. 
     /// </summary>
 
-    private void GeneratePattern(int index, int threadIndex, List<string> pattern, int rowIndexToStartAt)
+    private void GeneratePattern(int index, int threadIndex, List<string> pattern, int rowIndexToStartAt,int endPostion, bool continuous)
     {
       // Reasonable check for now, this blocks Main if updated every time this method gets called.
       //if (recursiveCalls % 1000 == 0)
-        //worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
+      //worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
 
       string[] PoolCheckArray = new string[2];
-      int startPosition = generatedRows.Count - (generatedRows.Count / threadIndex);
-      int endPostion = startPosition + (generatedRows.Count / totalNumberOfThreads);
 
-      if (index == 0)
-      {
-        pattern[0] = generatedRows[rowIndexToStartAt];
-        index++;
-      }
-
-      if (index < matrixSize || rowIndexToStartAt == endPostion - 1)
+      if (index < matrixSize)
       {
         for (int i = 0; i < generatedRows.Count; i++)
         {
+          if (index == 0)
+          {
+            if (rowIndexToStartAt < endPostion)
+            {
+              pattern[0] = generatedRows[rowIndexToStartAt];
+              rowIndexToStartAt++;
+            }
+          }
+
           if (index != 0)
           {
             pattern[index] = generatedRows[i];
@@ -170,10 +174,9 @@ namespace NurikabeApp
 
             if (PoolCheck(PoolCheckArray))
             {
+              continuous = true;
               if (ContinuityCheckMatrix(CopyMatrix(pattern)))
-              {
-
-              }
+              { continuous = true; }
               else
               {
                 if (index < matrixSize - 1)
@@ -183,24 +186,33 @@ namespace NurikabeApp
                     pattern[index + 1] = generatedRows[rowIndex];
 
                     if (ContinuityCheckMatrix(CopyMatrix(pattern)))
+                    {
+                      continuous = true;
                       goto done;
+                    }
+                    else
+                      continuous = false;
                   }
                 }
+                else
+                { continuous = false;  }
                 done:;
               }
             }
+            else
+            { continuous = false;  }
           }
-          if (patternCheck || index == 0)
+          if (continuous || index == 0)
           {
             if (index == 0)
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt + 1);
-            else
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt);
+              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt,endPostion , continuous);
+            else                                                      
+              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt,endPostion , continuous);
             recursiveCalls++;
           }
         }
       }
-      else if (patternCheck)
+      else if (continuous)
       {
         patternCount++;
         MatrixList.Add(PrintPattern(pattern));
@@ -241,7 +253,7 @@ namespace NurikabeApp
     #region Private methods
     private bool PoolCheck(string[] matrix)
     {
-      patternCheck = true;
+      bool patternCheck = true;
       int[,] testMatrix = new int[2, matrixSize];
       char[] arrayOne = matrix[0].ToCharArray();
       char[] arrayTwo = matrix[1].ToCharArray();
@@ -264,6 +276,7 @@ namespace NurikabeApp
 
     private int AreaForMatrix(int[,] matrix, int row, int col)
     {
+      int area;
       /// <summary> 
       ///    Although this conditional statement is not needed for the first iteration it will be
       ///     utilized across all recuring iterations.
@@ -295,6 +308,7 @@ namespace NurikabeApp
 
     private bool ContinuityCheckMatrix(int[,] matrix)
     {
+      bool patternCheck = true;
       int waterCount = WaterCountForMatrix(matrix);
       int streamCount;
 
