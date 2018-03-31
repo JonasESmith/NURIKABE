@@ -12,7 +12,7 @@ namespace NurikabeApp
     string path = "pattern.txt";
 
     List<string> generatedRows = new List<string>();
-    List<int[,]> MatrixList    = new List<int[,]>();
+    List<int[,]> MatrixList = new List<int[,]>();
 
     int matrixSize;
 
@@ -148,26 +148,28 @@ namespace NurikabeApp
     /// </param>
     private void StartPattenChecking(Object obj)
     {
-      int indicesSide;
+      int threadOrder;
       try
       {
-        indicesSide = (int)obj;
+        threadOrder = (int)obj;
       }
       catch (InvalidCastException)
       {
-        indicesSide = 0;
+        threadOrder = 0;
       }
+
+      int startPosition = generatedRows.Count - (generatedRows.Count / threadOrder);
+      int endPostion = startPosition + (generatedRows.Count / totalNumberOfThreads);
 
       List<string> pattern = new List<string>();
       for (int i = 0; i < matrixSize; i++)
-        pattern.Add("");
+          pattern.Add("");
 
-      bool continuous = true;
-      int startPosition = 0;
-      int endPostion = 16;
-      //int startPosition = generatedRows.Count - (generatedRows.Count / indicesSide);
-      //int endPostion = startPosition + (generatedRows.Count / totalNumberOfThreads);
-      GeneratePattern(0, indicesSide, pattern, startPosition, endPostion, continuous);
+      for (int rows = startPosition; rows < endPostion; rows++)
+      {
+        pattern[0] = generatedRows[rows];
+        GeneratePattern(1, pattern, rows, endPostion, true);
+      }
     }
 
     /// <summary>
@@ -179,11 +181,9 @@ namespace NurikabeApp
     ///     makes sure that all remaining patterns are not containing a pool. 
     /// </summary>
 
-    private void GeneratePattern(int index, int threadIndex, List<string> pattern, int rowIndexToStartAt, int endPostion, bool continuous)
+    private void GeneratePattern(int index, List<string> pattern, int rowIndexToStartAt, int endPostion, bool continuous)
     {
-      // Reasonable check for now, this blocks Main if updated every time this method gets called.
-      //if (recursiveCalls % 1000 == 0)
-      //worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
+      recursiveCalls++;
 
       string[] PoolCheckArray = new string[2];
 
@@ -191,58 +191,43 @@ namespace NurikabeApp
       {
         for (int i = 0; i < generatedRows.Count; i++)
         {
-          if (index == 0)
-          {
-            if (rowIndexToStartAt < endPostion)
-            {
-              pattern[0] = generatedRows[rowIndexToStartAt];
-              rowIndexToStartAt++;
-            }
-          }
+          pattern[index] = generatedRows[i];
+          PoolCheckArray[0] = pattern[index - 1];
+          PoolCheckArray[1] = pattern[index];
 
-          if (index != 0)
+          if (PoolCheck(PoolCheckArray))
           {
-            pattern[index] = generatedRows[i];
-            PoolCheckArray[0] = pattern[index - 1];
-            PoolCheckArray[1] = pattern[index];
-
-            if (PoolCheck(PoolCheckArray))
+            continuous = true;
+            if (ContinuityCheckMatrix(CopyMatrix(pattern)))
+            { continuous = true; }
+            else
             {
-              continuous = true;
-              if (ContinuityCheckMatrix(CopyMatrix(pattern)))
-              { continuous = true; }
-              else
+              if (index < matrixSize - 1)
               {
-                if (index < matrixSize - 1)
+                for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                 {
-                  for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
-                  {
-                    pattern[index + 1] = generatedRows[rowIndex];
+                  pattern[index + 1] = generatedRows[rowIndex];
 
-                    if (ContinuityCheckMatrix(CopyMatrix(pattern)))
-                    {
-                      continuous = true;
-                      goto done;
-                    }
-                    else
-                      continuous = false;
+                  if (ContinuityCheckMatrix(CopyMatrix(pattern)))
+                  {
+                    continuous = true;
+                    goto done;
                   }
+                  else
+                    continuous = false;
                 }
-                else
-                { continuous = false; }
-                done:;
               }
+              else
+              { continuous = false; }
+              done:;
             }
-            else
-            { continuous = false; }
           }
-          if (continuous || index == 0)
+          else
+          { continuous = false; }
+
+          if (continuous)
           {
-            if (index == 0)
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt, endPostion, continuous);
-            else
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt, endPostion, continuous);
-            recursiveCalls++;
+            GeneratePattern(index + 1, pattern, rowIndexToStartAt, endPostion, continuous);
           }
         }
       }
