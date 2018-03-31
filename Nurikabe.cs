@@ -297,7 +297,7 @@ namespace NurikabeApp
 
       BackgroundWorker worker = sender as BackgroundWorker;
 
-      generator = new PatternGeneration(matrixSize, worker);
+      generator = new PatternGeneration(matrixSize);
 
       /// <summary>
       ///   Bellow will have the ability to organize the rows based on number of 1's. This is
@@ -334,9 +334,7 @@ namespace NurikabeApp
       timer = new Stopwatch();
       timer.Start();
 
-      BackgroundWorker worker = sender as BackgroundWorker;
-
-      generator = new PatternGeneration(matrixSize, worker);
+      generator = new PatternGeneration(matrixSize);
 
       /// <summary>
       ///   Bellow will have the ability to organize the rows based on number of 1's. This is
@@ -350,11 +348,20 @@ namespace NurikabeApp
       ///     kind of weird honestly. 
       /// </summary>
 
-      generator.RunSolutionGenerator(SolutionGeneratorFinished);
+      generator.RunSolutionGenerator(SolutionGeneratorFinished, ActionFinished);
       //myWorker.RunWorkerAsync();
     }
 
     private void SolutionGeneratorFinished()
+    {
+      recursiveCalls = generator.recursiveCalls;
+      patternCount = generator.patternCount;
+
+      Time = timer.Elapsed.TotalSeconds.ToString();
+      UpdateGenerationLabels();
+    }
+
+    private void ActionFinished()
     {
       recursiveCalls = generator.recursiveCalls;
       patternCount = generator.patternCount;

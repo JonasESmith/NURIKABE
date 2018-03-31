@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 using System;
 
 namespace NurikabeApp
@@ -22,10 +22,9 @@ namespace NurikabeApp
     public int patternCount
     { get; private set; }
 
-    private BackgroundWorker worker;
     private int totalNumberOfThreads
     {
-      get { return 2; }
+      get { return 5; }
     }
 
     // ************************************************************************************** //
@@ -33,11 +32,9 @@ namespace NurikabeApp
     // ************************************************************************************** //
 
     #region Init
-    public PatternGeneration(int size, BackgroundWorker backgroundWorker)
+    public PatternGeneration(int size)
     {
       matrixSize = size;
-
-      worker = backgroundWorker;
     }
     #endregion
 
@@ -46,7 +43,7 @@ namespace NurikabeApp
     // ************************************************************************************** //
 
     #region Public methods
-    public void RunSolutionGenerator(Action callback)
+    public void RunSolutionGenerator(Action callback, Action ActionFinished)
     {
       GenerateRows(0, null);
 
@@ -67,12 +64,15 @@ namespace NurikabeApp
         again = false;
         for (int index = 0; index < managedThreads.Count; index++)
           again = again || managedThreads[index].IsAlive;
+        callback();
       }
       while (again);
 
-      // Below here will execute once the threads have completed.
-      Console.WriteLine("Completed work");
+      // Callback here to try and update the values
       callback();
+
+      // Below here will execute once the threads have completed.
+      ActionFinished();
     }
 
     public void CreateReport()
@@ -173,12 +173,7 @@ namespace NurikabeApp
     }
 
     /// <summary>
-    ///   CHANGES CAN BE MADE HERE!
-    ///     Here more than anywhere major changes can be made to improve the efficiency of producing good patterns. 
-    /// 
-    ///   This recursive method starts by entering the first patern into each row, then switching it 
-    ///     with each iteration. It first checks for a pool when a new row is added. By doing this it
-    ///     makes sure that all remaining patterns are not containing a pool. 
+    ///   
     /// </summary>
 
     private void GeneratePattern(int index, List<string> pattern, int rowIndexToStartAt, int endPostion, bool continuous)
@@ -234,7 +229,7 @@ namespace NurikabeApp
       else if (continuous)
       {
         patternCount++;
-        MatrixList.Add(PrintPattern(pattern));
+        //MatrixList.Add(PrintPattern(pattern));
       }
     }
 
