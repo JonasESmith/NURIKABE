@@ -144,7 +144,8 @@ namespace NurikabeApp
     /// work by how many threads get spawned.
     /// </summary>
     /// <param name="obj">
-    /// The parameter is a Object type, but the method is expecting an integer of the thread order.
+    /// The parameter is an Object type, but the method is expecting an integer that is descibing 
+    /// the thread order.
     /// </param>
     private void StartPattenChecking(Object obj)
     {
@@ -168,7 +169,7 @@ namespace NurikabeApp
       for (int rows = startPosition; rows < endPostion; rows++)
       {
         pattern[0] = generatedRows[rows];
-        GeneratePattern(1, pattern, rows, endPostion, true);
+        GeneratePattern(1, pattern, true); // Pass 1, since the pattern is filled here.
       }
     }
 
@@ -176,7 +177,7 @@ namespace NurikabeApp
     ///   
     /// </summary>
 
-    private void GeneratePattern(int index, List<string> pattern, int rowIndexToStartAt, int endPostion, bool continuous)
+    private void GeneratePattern(int index, List<string> pattern, bool continuous)
     {
       recursiveCalls++;
 
@@ -222,7 +223,7 @@ namespace NurikabeApp
 
           if (continuous)
           {
-            GeneratePattern(index + 1, pattern, rowIndexToStartAt, endPostion, continuous);
+            GeneratePattern(index + 1, pattern, continuous);
           }
         }
       }
