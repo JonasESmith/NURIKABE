@@ -30,7 +30,6 @@
     {
       this.matrixLabel = new System.Windows.Forms.Label();
       this.testBtn = new System.Windows.Forms.Button();
-      this.messageLabel = new System.Windows.Forms.Label();
       this.MatrixSizeComboBox = new System.Windows.Forms.ComboBox();
       this.buttonPanel = new System.Windows.Forms.Panel();
       this.genButton = new System.Windows.Forms.Button();
@@ -45,6 +44,12 @@
       this.timeLabel = new System.Windows.Forms.Label();
       this.CountLabel = new System.Windows.Forms.Label();
       this.RecurLabel = new System.Windows.Forms.Label();
+      this.messageLabel = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
+      this.RecurisveDisplay = new System.Windows.Forms.Label();
+      this.possibleCallsDisplay = new System.Windows.Forms.Label();
+      this.possibleCallsLabel = new System.Windows.Forms.Label();
+      this.timeDisplay = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -66,15 +71,6 @@
       this.testBtn.UseVisualStyleBackColor = true;
       this.testBtn.Click += new System.EventHandler(this.testBtn_Click);
       // 
-      // messageLabel
-      // 
-      this.messageLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.messageLabel.Location = new System.Drawing.Point(253, 171);
-      this.messageLabel.Name = "messageLabel";
-      this.messageLabel.Size = new System.Drawing.Size(109, 64);
-      this.messageLabel.TabIndex = 13;
-      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      // 
       // MatrixSizeComboBox
       // 
       this.MatrixSizeComboBox.FormattingEnabled = true;
@@ -85,18 +81,18 @@
             "6",
             "7",
             "8"});
-      this.MatrixSizeComboBox.Location = new System.Drawing.Point(87, 35);
+      this.MatrixSizeComboBox.Location = new System.Drawing.Point(16, 52);
       this.MatrixSizeComboBox.Name = "MatrixSizeComboBox";
-      this.MatrixSizeComboBox.Size = new System.Drawing.Size(50, 21);
+      this.MatrixSizeComboBox.Size = new System.Drawing.Size(67, 21);
       this.MatrixSizeComboBox.TabIndex = 14;
       this.MatrixSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.CmbBoxMSize_SelectedIndexChanged);
       // 
       // buttonPanel
       // 
       this.buttonPanel.BackColor = System.Drawing.SystemColors.ButtonFace;
-      this.buttonPanel.Location = new System.Drawing.Point(0, 62);
+      this.buttonPanel.Location = new System.Drawing.Point(0, 79);
       this.buttonPanel.Name = "buttonPanel";
-      this.buttonPanel.Size = new System.Drawing.Size(250, 250);
+      this.buttonPanel.Size = new System.Drawing.Size(250, 233);
       this.buttonPanel.TabIndex = 15;
       // 
       // genButton
@@ -153,11 +149,11 @@
       // matrixSizeLabel
       // 
       this.matrixSizeLabel.AutoSize = true;
-      this.matrixSizeLabel.Location = new System.Drawing.Point(13, 37);
+      this.matrixSizeLabel.Location = new System.Drawing.Point(13, 36);
       this.matrixSizeLabel.Name = "matrixSizeLabel";
-      this.matrixSizeLabel.Size = new System.Drawing.Size(76, 13);
+      this.matrixSizeLabel.Size = new System.Drawing.Size(81, 13);
       this.matrixSizeLabel.TabIndex = 18;
-      this.matrixSizeLabel.Text = "length of side :";
+      this.matrixSizeLabel.Text = "length of puzzle";
       // 
       // clearBtn
       // 
@@ -179,36 +175,97 @@
       // timeLabel
       // 
       this.timeLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.timeLabel.Location = new System.Drawing.Point(143, 35);
+      this.timeLabel.Location = new System.Drawing.Point(145, 51);
       this.timeLabel.Name = "timeLabel";
-      this.timeLabel.Size = new System.Drawing.Size(107, 21);
+      this.timeLabel.Size = new System.Drawing.Size(86, 21);
       this.timeLabel.TabIndex = 21;
-      this.timeLabel.Text = "Time :";
       this.timeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.timeLabel.Visible = false;
       // 
       // CountLabel
       // 
       this.CountLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.CountLabel.Location = new System.Drawing.Point(253, 143);
+      this.CountLabel.Location = new System.Drawing.Point(253, 148);
       this.CountLabel.Name = "CountLabel";
       this.CountLabel.Size = new System.Drawing.Size(109, 23);
       this.CountLabel.TabIndex = 22;
-      this.CountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.CountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
       // RecurLabel
       // 
       this.RecurLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.RecurLabel.Location = new System.Drawing.Point(253, 120);
+      this.RecurLabel.Location = new System.Drawing.Point(253, 102);
       this.RecurLabel.Name = "RecurLabel";
       this.RecurLabel.Size = new System.Drawing.Size(109, 23);
       this.RecurLabel.TabIndex = 23;
-      this.RecurLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.RecurLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // messageLabel
+      // 
+      this.messageLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.messageLabel.Location = new System.Drawing.Point(253, 200);
+      this.messageLabel.Name = "messageLabel";
+      this.messageLabel.Size = new System.Drawing.Size(109, 36);
+      this.messageLabel.TabIndex = 13;
+      this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // label1
+      // 
+      this.label1.Location = new System.Drawing.Point(253, 125);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(109, 23);
+      this.label1.TabIndex = 24;
+      this.label1.Text = "Good Patterns";
+      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // RecurisveDisplay
+      // 
+      this.RecurisveDisplay.Location = new System.Drawing.Point(253, 79);
+      this.RecurisveDisplay.Name = "RecurisveDisplay";
+      this.RecurisveDisplay.Size = new System.Drawing.Size(109, 23);
+      this.RecurisveDisplay.TabIndex = 25;
+      this.RecurisveDisplay.Text = "Actuall Calls";
+      this.RecurisveDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // possibleCallsDisplay
+      // 
+      this.possibleCallsDisplay.Location = new System.Drawing.Point(253, 34);
+      this.possibleCallsDisplay.Name = "possibleCallsDisplay";
+      this.possibleCallsDisplay.Size = new System.Drawing.Size(109, 23);
+      this.possibleCallsDisplay.TabIndex = 27;
+      this.possibleCallsDisplay.Text = "Possible Calls";
+      this.possibleCallsDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // possibleCallsLabel
+      // 
+      this.possibleCallsLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.possibleCallsLabel.Location = new System.Drawing.Point(253, 57);
+      this.possibleCallsLabel.Name = "possibleCallsLabel";
+      this.possibleCallsLabel.Size = new System.Drawing.Size(109, 23);
+      this.possibleCallsLabel.TabIndex = 26;
+      this.possibleCallsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // timeDisplay
+      // 
+      this.timeDisplay.AutoSize = true;
+      this.timeDisplay.Location = new System.Drawing.Point(146, 34);
+      this.timeDisplay.Name = "timeDisplay";
+      this.timeDisplay.Size = new System.Drawing.Size(85, 13);
+      this.timeDisplay.TabIndex = 28;
+      this.timeDisplay.Text = "Processing Time";
+      this.timeDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.timeDisplay.Visible = false;
       // 
       // Nurikabe
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(365, 319);
+      this.Controls.Add(this.timeDisplay);
+      this.Controls.Add(this.possibleCallsDisplay);
+      this.Controls.Add(this.possibleCallsLabel);
+      this.Controls.Add(this.RecurisveDisplay);
+      this.Controls.Add(this.label1);
       this.Controls.Add(this.RecurLabel);
       this.Controls.Add(this.CountLabel);
       this.Controls.Add(this.timeLabel);
@@ -234,7 +291,6 @@
     #endregion
     private System.Windows.Forms.Label matrixLabel;
     private System.Windows.Forms.Button testBtn;
-    private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ComboBox MatrixSizeComboBox;
     private System.Windows.Forms.Panel buttonPanel;
     private System.Windows.Forms.Button genButton;
@@ -249,6 +305,12 @@
     private System.Windows.Forms.Label CountLabel;
     private System.Windows.Forms.Label RecurLabel;
     private System.Windows.Forms.ToolStripMenuItem createReportToolStripMenuItem;
+    private System.Windows.Forms.Label messageLabel;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label RecurisveDisplay;
+    private System.Windows.Forms.Label possibleCallsDisplay;
+    private System.Windows.Forms.Label possibleCallsLabel;
+    private System.Windows.Forms.Label timeDisplay;
   }
 }
 

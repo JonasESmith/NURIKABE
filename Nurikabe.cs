@@ -340,6 +340,8 @@ namespace NurikabeApp
     /// </summary>
     private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
     {
+      timeLabel.Visible = true;
+      timeDisplay.Visible = true;
       myWorker.RunWorkerAsync();
     }
 
@@ -410,11 +412,9 @@ namespace NurikabeApp
     // ************************************************************************************** //
     // 4. PATTERN CHECKS/EVENTS/GENERATION                                                    //
     // ************************************************************************************** //
-
     /// <summary>
-    ///   This collection of code deal's with the checks for continuity and all axillary methods 
-    ///     to properly check, and test patterns in the matrixes. This is where the efficeinty 
-    ///     of the code can improve the most. 
+    ///   This collection of code deal's with the applications "game" of nurikabe all other 
+    ///     pattern generation and testing occurs in PatternGeneration.cs
     /// </summary>
     #region PATTERN CHECKS/EVENTS/GENERATION 
 
@@ -574,10 +574,11 @@ namespace NurikabeApp
 
     private void UpdateGenerationLabels()
     {
-      CountLabel.Text = "Patterns : " + patternCount.ToString();
-      RecurLabel.Text = "Calls    : " + recursiveCalls.ToString();
+      CountLabel.Text = patternCount.ToString("n0");
+      RecurLabel.Text = recursiveCalls.ToString("n0");
 
-      timeLabel.Text = "Time : " + Time;
+      possibleCallsLabel.Text = (Math.Pow(2, matrixSize * matrixSize)).ToString("n0");
+      timeLabel.Text = Time;
       timeLabel.Update();
     }
     #endregion

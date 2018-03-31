@@ -96,9 +96,7 @@ namespace NurikabeApp
             if (PoolCheck(PoolCheckArray))
             {
               if (ContinuityCheckMatrix(CopyMatrix(pattern)))
-              {
-
-              }
+              {/* Doesn't need to do anything as it sets patternCheck in ContinuityCheckMatrix */}
               else
               {
                 if (index < matrixSize - 1)
