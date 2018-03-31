@@ -46,38 +46,6 @@ namespace NurikabeApp
     // ************************************************************************************** //
 
     #region Public methods
-    /// <summary>
-    ///   This produces all possible patterns for a row of n sizes, by first putting a water block
-    ///     in each section of the pattern, then switching them to zeros as the method continues. 
-    /// </summary>
-    public void GenerateRows(int index, List<char> charList)
-    {
-      string finalPattern;
-
-      if (charList == null)
-      {
-        charList = new List<char>();
-        for (int i = 0; i < matrixSize; i++)
-          charList.Add(' ');
-      }
-
-      if (index < (matrixSize))
-      {
-        charList[index] = '1';
-        GenerateRows(index + 1, charList);
-
-        charList[index] = '0';
-        GenerateRows(index + 1, charList);
-      }
-      else
-      {
-        finalPattern = "";
-        foreach (char ch in charList)
-          finalPattern += ch;
-        generatedRows.Add(finalPattern);
-      }
-    }
-
     public void RunSolutionGenerator(Action callback)
     {
       GenerateRows(0, null);
@@ -107,11 +75,77 @@ namespace NurikabeApp
       callback();
     }
 
+    public void CreateReport()
+    {
+      StreamWriter sw = File.CreateText(path);
+      sw.Flush();
+      int index = 1;
+      string margin = "     ";
+
+      foreach (int[,] matrix in MatrixList)
+      {
+        sw.WriteLine("{0,-5}  ", (index + "."));
+
+        for (int i = 0; i < matrixSize; i++)
+        {
+          sw.Write(margin);
+          for (int j = 0; j < matrixSize; j++)
+          {
+            sw.Write(matrix[i, j] + " ");
+          }
+          sw.WriteLine();
+        }
+        sw.WriteLine();
+        index++;
+      }
+      sw.Close();
+    }
+    #endregion
+
+    // ************************************************************************************** //
+    // 1. PRIVATE METHODS                                                                     //
+    // ************************************************************************************** //
+
+    #region Private methods
+    /// <summary>
+    ///   This produces all possible patterns for a row of n sizes, by first putting a water block
+    ///     in each section of the pattern, then switching them to zeros as the method continues. 
+    /// </summary>
+    private void GenerateRows(int index, List<char> charList)
+    {
+      string finalPattern;
+
+      if (charList == null)
+      {
+        charList = new List<char>();
+        for (int i = 0; i < matrixSize; i++)
+          charList.Add(' ');
+      }
+
+      if (index < (matrixSize))
+      {
+        charList[index] = '1';
+        GenerateRows(index + 1, charList);
+
+        charList[index] = '0';
+        GenerateRows(index + 1, charList);
+      }
+      else
+      {
+        finalPattern = "";
+        foreach (char ch in charList)
+          finalPattern += ch;
+        generatedRows.Add(finalPattern);
+      }
+    }
 
     /// <summary>
-    /// This gets passed.
+    /// This method is used for when a new thread spawns. This method with split the recursive
+    /// work by how many threads get spawned.
     /// </summary>
-    /// <param name="obj"></param>
+    /// <param name="obj">
+    /// The parameter is a Object type, but the method is expecting an integer of the thread order.
+    /// </param>
     private void StartPattenChecking(Object obj)
     {
       int indicesSide;
@@ -133,7 +167,7 @@ namespace NurikabeApp
       int endPostion = 16;
       //int startPosition = generatedRows.Count - (generatedRows.Count / indicesSide);
       //int endPostion = startPosition + (generatedRows.Count / totalNumberOfThreads);
-      GeneratePattern(0, indicesSide, pattern, startPosition,endPostion , continuous);
+      GeneratePattern(0, indicesSide, pattern, startPosition, endPostion, continuous);
     }
 
     /// <summary>
@@ -145,7 +179,7 @@ namespace NurikabeApp
     ///     makes sure that all remaining patterns are not containing a pool. 
     /// </summary>
 
-    private void GeneratePattern(int index, int threadIndex, List<string> pattern, int rowIndexToStartAt,int endPostion, bool continuous)
+    private void GeneratePattern(int index, int threadIndex, List<string> pattern, int rowIndexToStartAt, int endPostion, bool continuous)
     {
       // Reasonable check for now, this blocks Main if updated every time this method gets called.
       //if (recursiveCalls % 1000 == 0)
@@ -195,19 +229,19 @@ namespace NurikabeApp
                   }
                 }
                 else
-                { continuous = false;  }
+                { continuous = false; }
                 done:;
               }
             }
             else
-            { continuous = false;  }
+            { continuous = false; }
           }
           if (continuous || index == 0)
           {
             if (index == 0)
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt,endPostion , continuous);
-            else                                                      
-              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt,endPostion , continuous);
+              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt, endPostion, continuous);
+            else
+              GeneratePattern(index + 1, threadIndex, pattern, rowIndexToStartAt, endPostion, continuous);
             recursiveCalls++;
           }
         }
@@ -219,38 +253,6 @@ namespace NurikabeApp
       }
     }
 
-    public void CreateReport()
-    {
-      StreamWriter sw = File.CreateText(path);
-      sw.Flush();
-      int index = 1;
-      string margin = "     ";
-
-      foreach (int[,] matrix in MatrixList)
-      {
-        sw.WriteLine("{0,-5}  ", (index + "."));
-
-        for (int i = 0; i < matrixSize; i++)
-        {
-          sw.Write(margin);
-          for (int j = 0; j < matrixSize; j++)
-          {
-            sw.Write(matrix[i, j] + " ");
-          }
-          sw.WriteLine();
-        }
-        sw.WriteLine();
-        index++;
-      }
-      sw.Close();
-    }
-    #endregion
-
-    // ************************************************************************************** //
-    // 1. PRIVATE METHODS                                                                     //
-    // ************************************************************************************** //
-
-    #region Private methods
     private bool PoolCheck(string[] matrix)
     {
       bool patternCheck = true;
