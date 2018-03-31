@@ -54,7 +54,6 @@ namespace NurikabeApp
     List<int[,]> MatrixList    = new List<int[,]>();
     List<char>   pattern       = new List<char>();
 
-    Thread[] ThreadArray;
     int[,]   matrixClone, matrix;
     int      matrixSize,  area, patternCount, recursiveCalls;
 
@@ -292,6 +291,7 @@ namespace NurikabeApp
 
     private void myWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
     {
+
       timer = new Stopwatch();
       timer.Start();
 
@@ -308,19 +308,15 @@ namespace NurikabeApp
         localPattern.Add("");
 
       int numOfThreads = Convert.ToInt32((Math.Pow(2, 10)));
-
       generator.GenerateRows(0);
-      /// <summary>
-      ///   Bellow will have the ability to organize the rows based on number of 1's. This is
-      ///     Not working as of now. 
-      /// </summary>
-      // generator.OrganizeRows();
 
       /// <summary>
       ///   This could potentially allow for multiThreading of the GeneratePatterns() method
       ///     This code is modeled after the CH16Prb2B given to us froim Dr. Oaks. It seems
       ///     kind of weird honestly. 
       /// </summary>
+      /// 
+
 
       generator.GeneratePattern(0, localPattern, ref patternCount, ref recursiveCalls);
 
