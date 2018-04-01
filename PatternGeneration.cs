@@ -18,11 +18,29 @@ namespace NurikabeApp
 
     int matrixSize;
 
+    private List<int> recursiveCallsArray = new List<int>();
     public int recursiveCalls
-    { get; private set; }
+    {
+      get
+      {
+        int amount = 0;
+        foreach (int number in recursiveCallsArray)
+          amount += number;
+        return amount;
+      }
+    }
 
+    private List<int> patternCountArray = new List<int>();
     public int patternCount
-    { get; private set; }
+    {
+      get
+      {
+        int amount = 0;
+        foreach (int number in patternCountArray)
+          amount += number;
+        return amount;
+      }
+    }
 
     private int totalNumberOfThreads
     {
@@ -159,11 +177,19 @@ namespace NurikabeApp
       for (int i = 0; i < matrixSize; i++)
           pattern.Add("");
 
+      int numberOfRecursiveCalls = 0;
+      int numberOfPatternsFound = 0;
+
       for (int rows = startPosition; rows < endPostion; rows++)
       {
         pattern[0] = generatedRows[rows];
-        GeneratePattern(1, pattern, true); // Pass 1, since the pattern is filled here.
+        Tuple<int, int> value = GeneratePattern(1, pattern, true, 0, 0); // Pass 1, since the pattern is filled here.
+        numberOfRecursiveCalls += value.Item1;
+        numberOfPatternsFound += value.Item2;
       }
+
+      recursiveCallsArray.Add(numberOfRecursiveCalls);
+      patternCountArray.Add(numberOfPatternsFound);
     }
 
     /// <summary>
@@ -172,9 +198,10 @@ namespace NurikabeApp
     ///     upon to further pruning. 
     /// </summary>
 
-    private void GeneratePattern(int index, List<string> pattern, bool continuous)
+    private Tuple<int, int> GeneratePattern(int index, List<string> pattern, bool continuous,
+                                            int numberOfPatternsFound, int numberOfRecursiveCalls)
     {
-      recursiveCalls++;
+      numberOfRecursiveCalls++;
 
       string[] PoolCheckArray = new string[2];
 
@@ -224,15 +251,19 @@ namespace NurikabeApp
 
           if (continuous)
           {
-            GeneratePattern(index + 1, pattern, continuous);
+            Tuple<int, int> value = GeneratePattern(index + 1, pattern, continuous, numberOfPatternsFound, numberOfRecursiveCalls);
+            numberOfRecursiveCalls = value.Item1;
+            numberOfPatternsFound = value.Item2;
           }
         }
       }
       else if (continuous)
       {
-        patternCount++;
-        //MatrixList.Add(PrintPattern(pattern));
+        numberOfPatternsFound++;
+        //MatrixList.Add(PrintPattern(pattern)); // Comment this line to save time and RAM.
       }
+
+      return new Tuple<int, int>(numberOfRecursiveCalls, numberOfPatternsFound);
     }
 
     private bool PoolCheck(string[] matrix)
