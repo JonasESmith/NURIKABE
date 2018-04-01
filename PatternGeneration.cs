@@ -178,6 +178,9 @@ namespace NurikabeApp
 
       string[] PoolCheckArray = new string[2];
 
+      /// <summary>
+      ///   
+      /// </summary>
       if (index < matrixSize)
       {
         for (int i = 0; i < generatedRows.Count; i++)
@@ -186,6 +189,9 @@ namespace NurikabeApp
           PoolCheckArray[0] = pattern[index - 1];
           PoolCheckArray[1] = pattern[index];
 
+          /// <summary>
+          ///   
+          /// </summary>
           if (PoolCheck(PoolCheckArray))
           {
             continuous = true;

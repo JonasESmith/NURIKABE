@@ -297,7 +297,7 @@ namespace NurikabeApp
     #endregion
     /* 2. ****** END **********/
 
-    /* 3. PATTERN GENERATION  */
+    /* 3. BACKGROUNDWORKER    */
     #region -- generation of patterns -
     /// <summary>
     ///   
