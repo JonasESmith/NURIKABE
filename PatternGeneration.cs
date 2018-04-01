@@ -67,40 +67,48 @@ namespace NurikabeApp
     }
 
     /// <summary>
-    ///   CHANGES CAN BE MADE HERE!
-    ///     Here more than anywhere major changes can be made to improve the efficiency of producing good patterns. 
-    /// 
-    ///   This recursive method starts by entering the first patern into each row, then switching it 
-    ///     with each iteration. It first checks for a pool when a new row is added. By doing this it
-    ///     makes sure that all remaining patterns are not containing a pool. 
+    ///   Recursively checks all possible combinations of Rows produced by GenerateRows(); If a combination of 
+    ///     rows is not continuous or fails a poolTest then we prune the branch. 
     /// </summary>
-
     public void GeneratePattern(int index, List<string> pattern, ref int patternCount, ref int recursiveCalls)
     {
-      // Reasonable check for now, this blocks Main if updated every time this method gets called.
+      /// Reasonable check for now, this blocks Main if updated every time this method gets called.
       if (recursiveCalls % 1000 == 0)
-        worker.ReportProgress(0); // Report 0 progress, as progress may be unknown.
+        worker.ReportProgress(0); /// Report 0 progress, as progress may be unknown.
 
       PoolCheckArray = new string[2];
 
+      ///   If the current index is less than the matrixsize continue to test rows in pattern[index].
+      ///     else if the pattern is good with both continuity check, and pool check add the pattern.
       if (index < matrixSize)
       {
         for (int i = 0; i < generatedRows.Count; i++)
         {
           pattern[index] = generatedRows[i];
+
           if (index != 0)
           {
+            /// 1. The pattern index is greater than 1 meaning at least two rows are in the pattern, so
+            ///     we need to load the values into the poolCheckArray to be passed into poolcheck();
+            /// 2. If there are no pools in the current two rows then check continuity bellow. else if 
+            ///     the pattern fails no need to continue putting patterns into following rows.
             PoolCheckArray[0] = pattern[index - 1];
             PoolCheckArray[1] = pattern[index];
-
             if (PoolCheck(PoolCheckArray))
             {
+              ///   This first gets the total number of 1's in the matrix, then it checks for the first water
+              ///     "block" found if their are any other water blocks next to it, and increments an area 
+              ///     count, if the number of 1's in the matrix matches that of the area of water found then
+              ///     it is continuous for the current set of rows. 
               if (ContinuityCheckMatrix(CopyMatrix(pattern)))
               {/* Doesn't need to do anything as it sets patternCheck in ContinuityCheckMatrix */}
               else
               {
                 if (index < matrixSize - 1)
                 {
+                  ///   Continuity failed, so we want to try the next row with a pattern, If at any point the 
+                  ///     row we added makes the pattern continues this for loop breaks, and we continue to add
+                  ///     values, If it does not we can assume no other patterns will be possible so we prune. 
                   for (int rowIndex = 0; rowIndex < generatedRows.Count; rowIndex++)
                   {
                     pattern[index + 1] = generatedRows[rowIndex];
@@ -115,17 +123,25 @@ namespace NurikabeApp
           }
           if (patternCheck || index == 0)
           {
+            ///   The patternCheck is true or the index of pattern is 0. Then for the next index we try another row,
+            ///     and increase recursiveCalls for the UI changes. 
             GeneratePattern(index + 1, pattern, ref patternCount, ref recursiveCalls);
             recursiveCalls++;
           }
         }
       }
+      ///   The pattern is good and the recursive method has gotten to the end of its "brach" 
       else if (patternCheck)
       {
         patternCount++;
       }
     }
 
+
+    /// <summary>
+    ///   Creates report if we are adding values to the matrixList. We have turned this off for now as 
+    ///     it takes as much time to dump the patterns to a file, if not more, than to produce all the values. 
+    /// </summary>
     public void CreateReport()
     {
       StreamWriter sw = File.CreateText(path);
