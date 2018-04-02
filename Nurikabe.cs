@@ -287,6 +287,8 @@ namespace NurikabeApp
     private void myWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       UpdateGenerationLabels();
+      cancelGenBtn.Visible = false;
+      genPatternBtn.Visible = true;
     }
 
     private void myWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -336,8 +338,6 @@ namespace NurikabeApp
     /// </summary>
     private void generatePatternsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      timeLabel.Visible = true;
-      timeDisplay.Visible = true;
       myWorker.RunWorkerAsync();
     }
 
@@ -529,6 +529,19 @@ namespace NurikabeApp
         }
       }
       return count;
+    }
+
+    private void GoodPatternsBtn_Click(object sender, EventArgs e)
+    {
+      myWorker.RunWorkerAsync();
+      cancelGenBtn.Visible = true;
+      genPatternBtn.Visible = false;
+      cancelGenBtn.Location = genPatternBtn.Location;
+    }
+
+    private void cancelGenBtn_Click(object sender, EventArgs e)
+    {
+
     }
 
     private void createReportToolStripMenuItem_Click(object sender, EventArgs e)
