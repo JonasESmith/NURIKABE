@@ -320,7 +320,6 @@
       this.cancelGenBtn.Text = "Cancel";
       this.cancelGenBtn.UseVisualStyleBackColor = true;
       this.cancelGenBtn.Visible = false;
-      this.cancelGenBtn.Click += new System.EventHandler(this.cancelGenBtn_Click);
       // 
       // processingTimeLabel
       // 

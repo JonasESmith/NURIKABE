@@ -104,7 +104,7 @@ namespace NurikabeApp
               {/* Doesn't need to do anything as it sets patternCheck in ContinuityCheckMatrix */}
               else
               {
-                if (index < matrixSize - 1)
+                if (index < (matrixSize-1))
                 {
                   ///   Continuity failed, so we want to try the next row with a pattern, If at any point the 
                   ///     row we added makes the pattern continues this for loop breaks, and we continue to add
@@ -302,6 +302,13 @@ namespace NurikabeApp
       return count;
     }
 
+
+    /// <summary>
+    ///   NEEDS WORK HERE
+    ///     https://stackoverflow.com/questions/797354/how-to-copy-a-row-of-values-from-a-2d-array-into-a-1d-array
+    ///     Exampl of what can be cahnged to enhance performance. This process is fairly slow. 
+    ///     
+    ///     Efficiency : O(n^2)
     private int[,] CopyMatrix(List<string> pattern)
     {
       int[,] newMatrix = new int[matrixSize, matrixSize];
@@ -319,6 +326,17 @@ namespace NurikabeApp
       }
 
       return newMatrix;
+    }
+
+    /// <summary>
+    ///   Converting all uses of the matrix to a jagged array could allow for more easier copying
+    ///     Which will increase speed of the entire operation. 
+    ///   
+    ///     Efficiency : O(n)
+    private void CopyMatrixIdea(List<string> source)
+    {
+      /// I am thinking that having an Arrar[Arrays] woudld actually be faster than having a matrix
+      ///   And having to copy it 
     }
 
     //// <summary>

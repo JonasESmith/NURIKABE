@@ -112,6 +112,21 @@ namespace NurikabeApp
           break;
       }
 
+      if(length > 5)
+      {
+        createReportToolStripMenuItem.Enabled = false;
+        createReportToolStripMenuItem.Text = "disabled(n>5)";
+        viewPatternsToolStripMenuItem.Enabled = false;
+        viewPatternsToolStripMenuItem.Text = "disabled(n>5)";
+      }
+      else
+      {
+        createReportToolStripMenuItem.Enabled = true;
+        createReportToolStripMenuItem.Text = "create report...";
+        viewPatternsToolStripMenuItem.Enabled = true;
+        viewPatternsToolStripMenuItem.Text = "view report...";
+      }
+
       for(int i = 0; i < matrixSize; i++)
       {
         buttonsMargin += sideLength;
@@ -537,11 +552,6 @@ namespace NurikabeApp
       cancelGenBtn.Visible = true;
       genPatternBtn.Visible = false;
       cancelGenBtn.Location = genPatternBtn.Location;
-    }
-
-    private void cancelGenBtn_Click(object sender, EventArgs e)
-    {
-
     }
 
     private void createReportToolStripMenuItem_Click(object sender, EventArgs e)
