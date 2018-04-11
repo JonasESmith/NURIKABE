@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
+
+namespace GenerateNurikabe
+{
+  class Program
+  {
+
+    static List<uint> legalMoveList = new List<uint>();
+
+    // Don't forget to add up all legal move lists.
+    // Add a 1 to it for the trivial case. Don't test for it.
+
+    static void Main(string[] args)
+    {
+      ulong totalLegalPuzzles;
+
+      //Stopwatch stopwatch = new Stopwatch();
+      //stopwatch.Start();
+      //totalLegalPuzzles = NurikabeInstance.StartMultithreadedRun(2, 3);
+      //stopwatch.Stop();
+      //Console.WriteLine(stopwatch.Elapsed);
+      //Console.WriteLine(totalLegalPuzzles);
+
+      //NurikabeInstance nurikabe = new NurikabeInstance(1, 65535, 16, 4);
+      NurikabeInstance nurikabe = new NurikabeInstance(1, 511, 9, 3);
+      ////MultithreadNurikabeInstance nurikabe = new MultithreadNurikabeInstance(1, 33554431, 25, 5);
+
+
+      nurikabe.GenerateLegalNurikabe();
+      Console.WriteLine(nurikabe.LegalPuzzles);
+      //foreach (string pattern in nurikabe.REMOVE)
+      //{
+      //  Console.WriteLine(pattern[0] + " " + pattern[1] + " " + pattern[2]);
+      //  Console.WriteLine(pattern[3] + " " + pattern[4] + " " + pattern[5]);
+      //  Console.WriteLine(pattern[6] + " " + pattern[7] + " " + pattern[8]);
+      //  Console.WriteLine();
+      //  ////  //Console.WriteLine(pattern[0] + " " + pattern[1] + " " + pattern[2] + " " + pattern[3]);
+      //  ////  //Console.WriteLine(pattern[4] + " " + pattern[5] + " " + pattern[6] + " " + pattern[7]);
+      //  ////  //Console.WriteLine(pattern[8] + " " + pattern[9] + " " + pattern[10] + " " + pattern[11]);
+      //  ////  //Console.WriteLine(pattern[12] + " " + pattern[13] + " " + pattern[14] + " " + pattern[15]);
+      //  ////  //Console.WriteLine();
+      //  //}
+      //}
+
+
+
+    }
+
+    public class NurikabeInstance
+    {
+      public ulong StartPoint { get; set; }
+      public ulong StopPoint { get; set; }
+      public int BinaryPatternSize { get; set; }
+      public int Dimension { get; set; }
+      //public int ListIndex { get; set; }
+      public uint LegalPuzzles { get; protected set; }
+      private string nurikabePattern;
+      private int[] visited; // int array to take advantage of Array.Clear
+                             //public List<string> REMOVE = new List<string>();
+
+      /// <summary>
+      /// An initializing constructor for an object to make multithreading easier. DO NOT start at 0.
+      /// </summary>
+      /// <param name="startPointVal">The starting puzzle, represented by a uint. DO NOT start at 0. The program will break and the 0th pattern is already accounted for.</param>
+      /// <param name="stopPointVal">The stopping puzzle, represented by a uint. This value is inclusive.</param>
+      /// <param name="patternSizeVal">The pattern size is the dimension squared. This is how long the binary strings will be.</param>
+      /// <param name="dimVal">The dimension, which in an n x n puzzle is n.</param>
+      /// <param name="indexVal">The index value that this Nurikabe instance may edit.</param>
+      public NurikabeInstance(ulong startPointVal, ulong stopPointVal, int patternSizeVal, int dimVal)
+      {
+        this.StartPoint = startPointVal;
+        this.StopPoint = stopPointVal;
+        this.BinaryPatternSize = patternSizeVal;
+        this.Dimension = dimVal;
+        //this.ListIndex = indexVal;
+        this.LegalPuzzles = 1; // Including the trivial case.
+        this.visited = new int[patternSizeVal];
+      }
+
+      public void GenerateLegalNurikabe()
+      {
+        for (ulong i = this.StartPoint; i <= this.StopPoint; i++)
+        {
+          // No ulong Convert.ToString exists. However, casting a ulong as a long does not change the binary.
+          nurikabePattern = Convert.ToString((long)i, 2).PadLeft(this.BinaryPatternSize, '0');
+          if (IsContinuous() && !HasPool())
+            this.LegalPuzzles += 1;
+        }
+      }
+
+      private bool HasPool()
+      {
+        bool hasPool = false;
+        int iterations = (this.Dimension - 1) * (this.Dimension - 1); // No Math.Pow exists for integers.
+        int puzzleIndex = 0;
+
+        for (int i = 1; i <= iterations; i++)
+        {
+          if (nurikabePattern[puzzleIndex] == '1' && nurikabePattern[puzzleIndex + 1] == '1' &&
+              nurikabePattern[puzzleIndex + Dimension] == '1' && nurikabePattern[puzzleIndex + Dimension + 1] == '1')
+          {
+            hasPool = true;
+            break;
+          }
+          // Jump 2 spots every n - 1 iterations.
+          if (i % (Dimension - 1) == 0)
+            puzzleIndex += 2;
+          else
+            puzzleIndex++;
+        }
+
+        return hasPool;
+      }
+
+      // Check speed performance of IndexOf/IndexOfAny
+      // Figure out iterative version
+      private int Area(int index)
+      {
+        int area = 0;
+
+        if (nurikabePattern[index] == '1')
+        {
+          this.visited[index] = 1;
+          area = 1;
+
+          if (index - Dimension >= 0 && visited[index - Dimension] == 0)   // Above
+            area += Area(index - Dimension);
+          if (index + Dimension <= BinaryPatternSize - 1 && visited[index + Dimension] == 0) // Below
+            area += Area(index + Dimension);
+          if ((index + 1) % Dimension != 0 && visited[index + 1] == 0)   // Right
+            area += Area(index + 1);
+          if (index % Dimension != 0 && visited[index - 1] == 0) // Left
+            area += Area(index - 1);
+        }
+        return area;
+      }
+
+      private bool IsContinuous()
+      {
+        bool isContinuous = true;
+        int occurencesOfZero = nurikabePattern.Length - nurikabePattern.Replace("1", "").Length;
+
+        // It is not continuous if we can't hit all water squares.
+        if (occurencesOfZero != Area(nurikabePattern.IndexOf("1")))
+          isContinuous = false;
+
+        return isContinuous;
+      }
+
+      // Extend upper limit on puzzles by using BigInteger Class. May just be too hard to go past 8.
+      /// <summary>
+      /// Starts a multithreaded run of a nurikabe puzzle. It partitions the possible patterns into the desired number of threads.
+      /// For thread counts and puzzle sizes that do not divide evenly, the last thread does the remaining puzzles.
+      /// </summary>
+      /// <param name="numOfThreads">The desired number of threads to run.</param>
+      /// <param name="sizeOfPuzzle">The length or width of an n x n nurikabe puzzle.</param>
+      /// <param name="parameters"></param>
+      public static ulong StartMultithreadedRun(int numOfThreads, int sizeOfPuzzle)
+      {
+        NurikabeInstance[] nurikabes = new NurikabeInstance[numOfThreads];
+        ThreadStart[] threadStarts = new ThreadStart[numOfThreads];
+        List<Thread> threads = new List<Thread>();
+
+        // There is no Math.Pow for integers.
+        int lengthOfPattern = sizeOfPuzzle * sizeOfPuzzle;
+
+        // Just for the purpose of Math.Pow. Does not allow implicit conversion of int to double.
+        double lengthOfPatternDouble = sizeOfPuzzle * sizeOfPuzzle;
+
+        // -1 because we already account for the trivial case.
+        ulong numberOfPatterns = (ulong)Math.Pow(2, lengthOfPatternDouble) - 1;
+
+        ulong shareSize = numberOfPatterns / (ulong)numOfThreads;
+        ulong extra = numberOfPatterns % (ulong)numOfThreads;
+        ulong sum = 0;
+
+        for (int i = 0; i < numOfThreads; i++)
+        {
+          nurikabes[i] = new NurikabeInstance(sum + 1, 0, lengthOfPattern, sizeOfPuzzle);
+          sum += shareSize;
+          if (i == numOfThreads - 1)
+            sum += extra;
+          nurikabes[i].StopPoint = sum;
+          threadStarts[i] = new ThreadStart(nurikabes[i].GenerateLegalNurikabe);
+        }
+
+        // Set up all threads
+        for (int i = 0; i < numOfThreads; i++)
+          threads.Add(new Thread(threadStarts[i]));
+
+        // Start all threads.
+        for (int i = 0; i < numOfThreads; i++)
+          threads[i].Start();
+
+        bool stillBusy = true;
+        while (stillBusy)
+        {
+          stillBusy = false;
+          for (int i = 0; i < numOfThreads; i++)
+          {
+            if (threads[i].IsAlive)
+            {
+              stillBusy = true;
+              Thread.Sleep(500);
+              break;
+            }
+          }
+        }
+
+        // Add up all puzzles.
+        ulong totalLegalPuzzles = 0;
+        for (int i = 0; i < numOfThreads; i++)
+          totalLegalPuzzles += nurikabes[i].LegalPuzzles;
+        return totalLegalPuzzles;
+      }
+    }
+  }
+}
