@@ -1,6 +1,7 @@
 # NURIKABE
-An application to test Nurikabe Patterns, and generate all possible nurikabe patterns for the selected index. 
+Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
+# Processing times
 ### js-times MasterBranch
   ###### N : Recr_Calls : Time
   - 3 : 189 : 0.0038 <br />
