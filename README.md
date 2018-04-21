@@ -11,10 +11,10 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
   | 6 | 33,379,000      | 8118.2854      |
 
 ### js-times master
-  | N | Good Patterns   | Time (hh:mm:ss.ms)  |
+  | N | date   | Time (hh:mm:ss.ms)  |
   | - |:---------------:| --------------:|
-  | 6 | 84,900,755      | 33:17.1081422  | - 4/16
-  | 6 | 84,900,755      | 31:23.5661255  | - 4/21
+  | 6 | 4/16      | 33:17.1081422  |
+  | 6 | 4/21   | 31:23.5661255  |
 
 ### jc-times master
   | N | Time (hh:mm:ss.ms) |
