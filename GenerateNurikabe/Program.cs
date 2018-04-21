@@ -311,7 +311,7 @@ namespace GenerateNurikabe
     }
   }
 
-  class BooleanArray
+  struct BooleanArray
   {
     private bool[] boolArray;
     private int position;
@@ -326,6 +326,7 @@ namespace GenerateNurikabe
     {
       string startString = Convert.ToString(((long)startPoint - 1), 2).PadLeft(size, '0');
       this.boolArray = new bool[size];
+      this.position = 0;
 
       for (int i = 0; i < size; i++)
         if (startString[i] == '1')
