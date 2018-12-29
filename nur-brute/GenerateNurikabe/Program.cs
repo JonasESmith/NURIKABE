@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace GenerateNurikabe
 {
@@ -17,7 +13,7 @@ namespace GenerateNurikabe
 
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
-      totalLegalPuzzles = NurikabeInstance.StartMultithreadedRun(8, 6);
+      totalLegalPuzzles = NurikabeInstance.StartMultithreadedRun(8, 4);
       stopwatch.Stop();
       Console.WriteLine(totalLegalPuzzles);
       Console.WriteLine(stopwatch.Elapsed);
