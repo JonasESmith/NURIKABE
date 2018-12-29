@@ -6,33 +6,33 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 		<img src="images/non-contiguous.PNG" alt="icon">
 	<h4> 2. Cannot have pools of water </h4>
 		<img src="images/pool.PNG" alt="icon">
-	<h4> 3. Good pattern </h4> 
+	<h4> 3. Good pattern </h4>
 		<img src="images/good.PNG" alt="icon">
-	
+
 # Solutions
 
-	Brute force 
+	Brute force
 		* A low level approach
 		* considers all possible solutions when testing pattern
-	Pruning 
+	Pruning
 		* Attempts to prune bad patterns early
 		* With large [n x n] prunes nearly 99% of patterns
 
 ### Solution times
-  | N  | Brute mm:ss.ms) | Prune (s) |
+  | N  | Brute (mm:ss.ms) | Prune (s) |
   | :---: | :---: | :---: |
   |3x3 | 00:00.0019308          | 0.0038    |
   |4x4 | 00:00.0049499          | 0.0867    |
   |5x5 | 00:01.1569876          | 13.2519   |
   |6x6 |  37:06.4171906         | 8118.2854 |
   |7x7 | N/A |  N/A       |
-  
+
 ### Solution Results
   | N  | Good patterns |
-  | :---: | :---: | 
+  | :---: | :---: |
   |2x2 | 13 |
-  |3x3 | 140 | 
-  |4x4 | 3,756 | 
-  |5x5 | 318,890 | 
+  |3x3 | 140 |
+  |4x4 | 3,756 |
+  |5x5 | 318,890 |
   |6x6 | 84,900,755 |
   |7x7 | N/A |
