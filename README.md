@@ -3,7 +3,7 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
 <h2> Rules </h2>
 	* Water (black squares) must be continuous
-	<img src="images/non-continuous.PNG" alt="icon">
+	<img src="images/non-contiguous.PNG" alt="icon">
 	* Cannot have pools of water
 	<img src="images/pool.PNG" alt="icon">
 	* Good pattern
