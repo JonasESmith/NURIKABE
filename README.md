@@ -1,7 +1,7 @@
 # NURIKABE
 Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
-# Solution times
+### Solution times
   | N  | Brute Force (hh:mm:ss.ms) | Prune (s) |
   |3x3 | 00:00:00.0019308          | 0.0038    |
   |4x4 | 00:00:00.0049499          | 0.0867    |
