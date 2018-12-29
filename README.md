@@ -1,3 +1,10 @@
+# What is this?
+This repository contains the findings of the research that was conducted by students at Missouri Southern State University.
+
+**Students**: [Jonas Smith](https://github.com/JonasESmith), [Jaired Collins](https://github.com/jairedcollins), and [Andrew Robinson](https://github.com/SirArkimedes)
+
+**Advisors**: Dr. Charles Curtis and Dr. Jacob Boswell
+
 # NURIKABE
 Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
