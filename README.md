@@ -2,18 +2,18 @@
 Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
 <h2> Rules </h2>
-	* Water (black squares) must be continuous
-	<img src="images/non-contiguous.PNG" alt="icon">
-	* Cannot have pools of water
-	<img src="images/pool.PNG" alt="icon">
-	* Good pattern
+	<h3> Water (black squares) must be continuous </h3>
+		<img src="images/non-contiguous.PNG" alt="icon">
+	<h3> Cannot have pools of water </h3>
+		<img src="images/pool.PNG" alt="icon">
+	<h3> Good pattern </h3> 
 		<img src="images/good.PNG" alt="icon">
 	
 # Solutions
+
 	1. Brute force 
 		1. A low level approach
 		2. considers all possible solutions when testing pattern
-		
 	2. Pruning 
 		1. Attempts to prune bad patterns early
 		2. With large [n x n] prunes nearly 99% of patterns
