@@ -10,12 +10,19 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 		<img src="images/good.PNG" alt="icon">
 	
 # Solutions
-	* Brute force 
-		* A low level approach
-		* considers all possible solutions when testing pattern
-	* Pruning 
-		* Attempts to prune bad patterns early
-		* With large [n x n] prunes nearly 99% of patterns
+
+	<ul>
+		<li> A low level approach </li>
+		<ul>
+			<li> A low level approach </li>
+			<li> Considers all possible solutions when testing pattern </li> 
+		</ul>
+		<li> Pruning </li>
+		<ul>
+			<li> Attempts to prune bad patterns early </li>
+			<li> With large [n x n] prunes nearly 99% of patterns </li> 
+		</ul>
+	</ul>
 
 ### Solution times
   | N  | Brute mm:ss.ms) | Prune (s) |
