@@ -26,3 +26,13 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
   |5x5 | 00:01.1569876          | 13.2519   |
   |6x6 |  37:06.4171906         | 8118.2854 |
   |7x7 | N/A |  N/A       |
+  
+### Solution Results
+  | N  | Good patterns |
+  | :---: | :---: | 
+  |2x2 | 13 |
+  |3x3 | 140 | 
+  |4x4 | 3,756 | 
+  |5x5 | 318,890 | 
+  |6x6 | 84,900,755 |
+  |7x7 | N/A |
