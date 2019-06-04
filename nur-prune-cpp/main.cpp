@@ -30,7 +30,7 @@ int main()
 
     // start timer here is necessary
 
-    int patternCount, recursiveCalls;
+    int patternCount = 0, recursiveCalls = 0;
 
     bitset<matrixDim * matrixDim> patVect;
 
@@ -60,10 +60,10 @@ int main()
     // cout << PoolCheck(poolTest);
 
     // easy way to test continuityCheck
-    // vector<bitset<2>> poolTest;
-    // poolTest.push_back(11);
-    // poolTest.push_back(00);
-    // cout << ContinuityCheck(poolTest);
+    vector<bitset<2>> contTest;
+    contTest.push_back(01);
+    contTest.push_back(00);
+    ContinuityCheck(contTest);
 
     GeneratePattern(0, genereatedPattern, patternCount, recursiveCalls);
     std::cout << "Pattern count   : " << patternCount << "\n";
@@ -88,8 +88,6 @@ bool PoolCheck(vector<bitset<matrixDim>> poolVector)
 
 bool ContinuityCheck(vector<bitset<matrixDim>> pattern)
 {
-    check;
-
     int waterCount = WaterCount(pattern);
     int cnctWaterCount;
 
@@ -101,7 +99,7 @@ bool ContinuityCheck(vector<bitset<matrixDim>> pattern)
         {
             for (int j = 0; j < matrixDim; j++)
             {
-                if (pattern[i][i] == 1)
+                if (pattern[i][j] == 1)
                 {
                     row = i;
                     col = j;
@@ -110,7 +108,7 @@ bool ContinuityCheck(vector<bitset<matrixDim>> pattern)
             }
         }
 
-    done:; // >:)
+        done:; // >:)
 
         vector<bitset<matrixDim>> copyPattern = pattern;
 
@@ -135,7 +133,7 @@ int ConnectedWater(vector<bitset<matrixDim>> pattern, int i, int j)
 {
     if (pattern[i][j] == 1)
     {
-        pattern[i][j] = 3;
+        pattern[i][j] = NULL;
         area = 1;
 
         if (j + 1 <= matrixDim - 1)
@@ -205,8 +203,8 @@ void GeneratePattern(int index, vector<bitset<matrixDim>> pattern, int &patternC
                             }
                         }
 
-                    done:;
                     }
+                done:;
                 }
             }
             if (check || index == 0)
