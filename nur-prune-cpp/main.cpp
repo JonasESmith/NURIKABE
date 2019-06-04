@@ -68,6 +68,10 @@ int main()
     GeneratePattern(0, genereatedPattern, patternCount, recursiveCalls);
     std::cout << "Pattern count   : " << patternCount << "\n";
     std::cout << "Recursive Calls : " << recursiveCalls << "\n";
+
+    std::getchar();
+
+    return 0;
 }
 
 bool PoolCheck(vector<bitset<matrixDim>> poolVector)
