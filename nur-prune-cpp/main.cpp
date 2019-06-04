@@ -4,7 +4,7 @@
 
 using namespace std; // allows me to not use std::
 
-const int matrixDim = 2;
+const int matrixDim = 3;
 int area;
 bool check;
 
@@ -44,14 +44,14 @@ int main()
     generatedRows.clear();
     GenerateRows(0);
 
-    for (int i = 0; i < generatedRows.size(); i++)
-    {
-        for (int j = 0; j < generatedRows[i].size(); j++)
-        {
-            cout << generatedRows[i][j];
-        }
-        cout << "\n";
-    }
+    // for (int i = 0; i < generatedRows.size(); i++)
+    // {
+    //     for (int j = 0; j < generatedRows[i].size(); j++)
+    //     {
+    //         cout << generatedRows[i][j];
+    //     }
+    //     cout << "\n";
+    // }
 
     // // this is an extremely easy way to test the PoolCheck method
     // vector<bitset<2>> poolTest;
@@ -60,10 +60,10 @@ int main()
     // cout << PoolCheck(poolTest);
 
     // easy way to test continuityCheck
-    vector<bitset<2>> contTest;
-    contTest.push_back(01);
-    contTest.push_back(00);
-    ContinuityCheck(contTest);
+    // vector<bitset<2>> contTest;
+    // contTest.push_back(01);
+    // contTest.push_back(00);
+    // ContinuityCheck(contTest);
 
     GeneratePattern(0, genereatedPattern, patternCount, recursiveCalls);
     std::cout << "Pattern count   : " << patternCount << "\n";
@@ -80,8 +80,6 @@ bool PoolCheck(vector<bitset<matrixDim>> poolVector)
             check = false;
         }
     }
-
-    cout << "Pool Check : " << check << "\n";
 
     return check;
 }
@@ -123,8 +121,6 @@ bool ContinuityCheck(vector<bitset<matrixDim>> pattern)
         check = true;
     else
         check = false;
-
-    cout << "Continuity Check : " << check << "\n";
 
     return check;
 }
