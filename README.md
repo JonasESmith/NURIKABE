@@ -1,4 +1,4 @@
-=# What is this?
+# What is this?
 This repository contains the findings of the research that was conducted by students at Missouri Southern State University.
 
 **Students**: [Jonas Smith](https://github.com/JonasESmith), [Jaired Collins](https://github.com/jairedcollins), and [Andrew Robinson](https://github.com/SirArkimedes)
