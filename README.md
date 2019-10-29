@@ -25,7 +25,11 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
   * With large [n x n] prunes nearly 99% of patterns
 
 
+
 ## Solution Results
+
+    ( Updated 10/29/2019 ) - Added results for 7x7
+
   | N   | Good patterns | Prune (s) | Brute (s)        |
   | :-: | :---:         | :-------: | :--------------: |
   |2x2  | 13            | ~         |  ~               |
@@ -39,20 +43,21 @@ Applications to test all possible legal patterns for a [n,n] Nurikabe grid.
 
  <br/><br/> 
 
-  > ( updated 10/29/19 )  - using rows that only use islands of size 1
   ## Solution Results for islands of size one
+
+    ( updated 10/29/19 )  - using rows that only use islands of size 1
 
   * The idea for these results is to use rows to construct the puzzles like this for a 4x4 row `{ 0, 1, 0, 1 }` where island size cannot be greater than one.
 
 
-| n  | Patterns    | Time in (ms)                | recursive method calls | possible patterns (2^n^2) |
-| -  | --------    | --------------------------- | ---------------------- | ------------------------- |
-| 2  |4            | ~                           | 9                      | 16                        |
-| 3  |12           | ~                           | 49                     | 512                       |
-| 4  |46           | ~                           | 368                    | 65,536                    |
-| 5  |302          | ~                           | 4,573                  | 33,554,432                |
-| 6  |2800         | ~                           | 90,821                 | 68,719,476,736            |
-| 7  |39236        | 169                         | 2,993,954              | 562,949,953,421,312       |
-| 8  |800030       | 6,861                       | 159,103,215            | 18,446,744,073,709,551,616|
-| 9  |23,892,610   | 535,480                     | 418,244,822            | 2^81                      |
-| 10 |1,036,381,448| 62,935,121 (17.5 hours)     | ** (stopped recording) | 2^100                     |
+| n  | Patterns     | Equiv Classes | Time in (ms)                | recursive method calls | possible patterns (2^n^2) |
+| -  | --------     | ------------- | --------------------------- | ---------------------- | ------------------------- |
+| 2  |4             |             4 | ~                           | 9                      | 16                        |
+| 3  |12            |            31 | ~                           | 49                     | 512                       |
+| 4  |46            |           497 | ~                           | 368                    | 65,536                    |
+| 5  |302           |               | ~                           | 4,573                  | 33,554,432                |
+| 6  |2800          |               | ~                           | 90,821                 | 68,719,476,736            |
+| 7  |39236         |               | 169                         | 2,993,954              | 562,949,953,421,312       |
+| 8  |800030        |               | 6,861                       | 159,103,215            | 18,446,744,073,709,551,616|
+| 9  |23,892,610    |               | 535,480                     | 418,244,822            | 2^81                      |
+| 10 |1,036,381,448 |               | 62,935,121 (17.5 hours)     | ** (stopped recording) | 2^100                     |
