@@ -134,6 +134,8 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
+        MatrixList.Add(CopyMatrix(pattern));
+
       }
     }
 
