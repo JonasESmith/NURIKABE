@@ -104,7 +104,7 @@ namespace NurikabeApp
               {/* Doesn't need to do anything as it sets patternCheck in ContinuityCheckMatrix */}
               else
               {
-                if (index < (matrixSize-1))
+                if (index < (matrixSize - 1))
                 {
                   ///   Continuity failed, so we want to try the next row with a pattern, If at any point the 
                   ///     row we added makes the pattern continues this for loop breaks, and we continue to add
@@ -117,7 +117,7 @@ namespace NurikabeApp
                       goto done;
                   }
                 }
-                done:;
+              done:;
               }
             }
           }
@@ -134,6 +134,8 @@ namespace NurikabeApp
       else if (patternCheck)
       {
         patternCount++;
+        MatrixList.Add(CopyMatrix(pattern));
+
       }
     }
 
