@@ -1,0 +1,17 @@
+[package]
+name = "nur-rust"
+version = "0.1.0"
+edition = "2021"
+description = "Transfer-matrix counter for Nurikabe patterns"
+
+[dependencies]
+rayon = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+# Brute-force cross-checks in the test suite enumerate 2^25 grids.
+[profile.test]
+opt-level = 3
